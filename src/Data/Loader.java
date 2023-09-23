@@ -42,7 +42,7 @@ public class Loader {
             currentRow++;
         }
 
-        return new Table(columnNames, values);
+        return new Table(columnNames, values, path.toString());
     }
 
     public Dataset loadDataset(String folderPath) {
@@ -61,7 +61,7 @@ public class Loader {
             }
         }
 
-        return new Dataset(tables);
+        return new Dataset(tables.toArray(new Table[0]));
 
     }
 }
