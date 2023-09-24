@@ -42,10 +42,12 @@ public class Loader {
             currentRow++;
         }
 
+        br.close();
+
         return new Table(columnNames, values, path.getFileName().toString());
     }
 
-    public Dataset loadDataset(String folderPath) {
+    public Dataset loadDataset(String folderPath, int minRows) {
 
         // get a list of all csv files in the folder
         File [] files = new File(folderPath).listFiles(obj -> obj.isFile() && obj.getName().endsWith(".csv"));
@@ -55,7 +57,7 @@ public class Loader {
 
         for (File f: files) {
             try {
-                if ((int) Files.lines(f.toPath()).count() > 10) {
+                if ((int) Files.lines(f.toPath()).count() >= minRows) {
                     tables.add(loadTable(f.toPath()));
                 }
             } catch (IOException | ArrayIndexOutOfBoundsException e) {

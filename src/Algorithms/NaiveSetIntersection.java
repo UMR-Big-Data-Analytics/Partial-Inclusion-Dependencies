@@ -21,7 +21,7 @@ public class NaiveSetIntersection {
             for (int columnIndex = 0; columnIndex < dataset.tables[tableIndex].numCols; columnIndex++) {
                 //System.out.println(Arrays.toString(dataset.tables[tableIndex].values[columnIndex]));
                 Set<String> currentSet = l.get(tableIndex).get(columnIndex);
-                double currentSize = currentSet.size();
+                int minRequiredMatches = (int) Math.ceil((double) currentSet.size() * threshold);
 
                 int testTableIndex = 0;
                 int testColumnIndex;
@@ -29,15 +29,14 @@ public class NaiveSetIntersection {
                     testColumnIndex = 0;
                     for (Set<String> testColumn: table) {
                         if (testTableIndex == tableIndex && testColumnIndex == columnIndex) {
+                            testColumnIndex++;
                             continue;
                         }
                         Set<String> copy = new HashSet<>(currentSet);
                         copy.retainAll(testColumn);
                         int intersect = copy.size();
-                        if (intersect/currentSize >= threshold) {
+                        if (intersect >= minRequiredMatches) {
                             found++;
-                            // System.out.println(tableIndex + "." + columnIndex + " c " +
-                            // testTableIndex + "." + testColumnIndex);
                         }
                         testColumnIndex++;
                     }
@@ -49,22 +48,33 @@ public class NaiveSetIntersection {
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
         System.out.println("Found " + found + " pINDs using a threshold of " + threshold +
-                ". Took:" + elapsedTime/1000 + "sec");
+                ". Took: " + elapsedTime/1000 + "sec");
     }
 
     public static void main(String[] args) {
         Loader loader = new Loader(",");
-        Dataset dataset = loader.loadDataset("data/T2D Complete gold standard");
+        Dataset dataset = loader.loadDataset("data/T2D Complete gold standard", 20);
 
         dataset.printStatistics();
 
-        findUnaryPartialInclusionDependencies(dataset, 0.90);
+        for (double t :new double[]{0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5}) {
+            findUnaryPartialInclusionDependencies(dataset, t);
+        }
     }
 
     /*
-    Found 250146 pINDs using a threshold of 1.0. Took:135sec
-    Found 252825 pINDs using a threshold of 0.95. Took:147sec
-    Found 258703 pINDs using a threshold of 0.9. Took:140sec
+    minRows = 20 - T2D
+    Found 37332 pINDs using a threshold of 1.0. Took: 56sec
+    Found 40017 pINDs using a threshold of 0.95. Took: 60sec
+    Found 43611 pINDs using a threshold of 0.9. Took: 58sec
+    Found 46109 pINDs using a threshold of 0.85. Took: 60sec
+    Found 48851 pINDs using a threshold of 0.8. Took: 56sec
+    Found 52434 pINDs using a threshold of 0.75. Took: 56sec
+    Found 54720 pINDs using a threshold of 0.7. Took: 56sec
+    Found 58764 pINDs using a threshold of 0.65. Took: 56sec
+    Found 61793 pINDs using a threshold of 0.6. Took: 56sec
+    Found 64884 pINDs using a threshold of 0.55. Took: 56sec
+    Found 87207 pINDs using a threshold of 0.5. Took: 56sec
      */
 }
 
