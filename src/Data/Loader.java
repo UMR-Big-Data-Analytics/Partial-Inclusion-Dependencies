@@ -42,7 +42,7 @@ public class Loader {
             currentRow++;
         }
 
-        return new Table(columnNames, values, path.toString());
+        return new Table(columnNames, values, path.getFileName().toString());
     }
 
     public Dataset loadDataset(String folderPath) {
@@ -55,7 +55,9 @@ public class Loader {
 
         for (File f: files) {
             try {
-                tables.add(loadTable(f.toPath()));
+                if ((int) Files.lines(f.toPath()).count() > 10) {
+                    tables.add(loadTable(f.toPath()));
+                }
             } catch (IOException | ArrayIndexOutOfBoundsException e) {
                 //System.out.println("Unable to load table: " + f.getName());
             }
