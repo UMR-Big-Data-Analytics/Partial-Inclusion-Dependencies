@@ -5,15 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Dataset {
-    public Table[] tables;
+    public List<Table> tables;
 
-    public Dataset(Table[] tables) {
+    public Dataset(List<Table> tables) {
         this.tables = tables;
     }
 
     public List<List<List<String>>> sortAndRemoveDuplicates() {
 
-        List<List<List<String>>> listBasedDataset = new ArrayList<>(tables.length);
+        List<List<List<String>>> listBasedDataset = new ArrayList<>(tables.size());
         for (Table table: tables) {
             List<List<String>> listBasedTable = new ArrayList<>(table.numCols);
             for (String[] column : table.values) {
@@ -26,7 +26,8 @@ public class Dataset {
     }
 
     public void printStatistics() {
-        System.out.println("Dataset contains " + tables.length + " tables totaling " +
-                Arrays.stream(tables).mapToInt(x -> x.values.length).sum() + " columns.");
+        System.out.println("Dataset contains " + tables.size() + " tables totaling " +
+                tables.stream().mapToInt(x -> x.numCols).sum() + " columns and " +
+                tables.stream().mapToInt(x -> x.values[0].length).sum() + " rows.");
     }
 }
