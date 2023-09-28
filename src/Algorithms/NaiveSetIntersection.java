@@ -11,14 +11,14 @@ public class NaiveSetIntersection {
 
         long startTime = System.currentTimeMillis();
 
-        List<List<HashSet<String>>> l = Arrays.stream(dataset.tables)
+        List<List<HashSet<String>>> l = dataset.tables.stream()
                 .map(x -> Arrays.stream(x.values)
                         .map(y -> new HashSet<>(List.of(y))).toList()).toList();
 
         int found = 0;
 
-        for (int tableIndex = 0; tableIndex < dataset.tables.length; tableIndex++) {
-            for (int columnIndex = 0; columnIndex < dataset.tables[tableIndex].numCols; columnIndex++) {
+        for (int tableIndex = 0; tableIndex < dataset.tables.size(); tableIndex++) {
+            for (int columnIndex = 0; columnIndex < dataset.tables.get(tableIndex).numCols; columnIndex++) {
                 //System.out.println(Arrays.toString(dataset.tables[tableIndex].values[columnIndex]));
                 Set<String> currentSet = l.get(tableIndex).get(columnIndex);
                 int minRequiredMatches = (int) Math.ceil((double) currentSet.size() * threshold);
@@ -52,12 +52,12 @@ public class NaiveSetIntersection {
     }
 
     public static void main(String[] args) {
-        Loader loader = new Loader(",");
-        Dataset dataset = loader.loadDataset("data/T2D Complete gold standard", 20);
+        Loader loader = new Loader(',');
+        Dataset dataset = loader.loadDataset("data/Catalog Data Gov", 20);
 
         dataset.printStatistics();
 
-        for (double t :new double[]{0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5}) {
+        for (double t :new double[]{1.0, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5}) {
             findUnaryPartialInclusionDependencies(dataset, t);
         }
     }
