@@ -18,38 +18,50 @@ public class Loader {
         this.delimiter = delimiter;
     }
 
-    public Table loadTable(Path path) throws IOException {
+    public Table loadTable(Path path, int minRows) throws IOException {
 
         // int cast since we do not expect more than 2.4B lines
         // a dataset of this size would most likely not fit into a systems main memory anyway
 
-        int rowCount = (int) Files.lines(path).count();
-
         BufferedReader br = new BufferedReader(new FileReader(path.toString()));
 
+        String[] nextRow;
         CSVReader reader = new CSVReader(br, delimiter);
-
         String[] columnNames = reader.readNext();
         int columnCount = columnNames.length;
 
-        List<String[]> v = new ArrayList<>(rowCount);
-        String[] nextRow;
+        int records = 0;
         while ((nextRow = reader.readNext()) != null) {
             if (nextRow.length == columnCount) {
-                v.add(nextRow);
+                records++;
             }
         }
-        String[][] values = v.toArray(new String[0][0]);
+        br.close();
+        reader.close();
 
-        String[][] transposed_values = new String[values[0].length][values.length];
+        if (records < minRows) {
+            return null;
+        }
 
-        for (int row = 0; row < values.length; row++) {
-            for (int col = 0; col < values[0].length; col++) {
-                transposed_values[col][row] = values[row][col];
+        br = new BufferedReader(new FileReader(path.toString()));
+        reader = new CSVReader(br, delimiter);
+        reader.readNext(); // skip column names
+        String[][] values = new String[columnCount][records];
+
+        int rowCounter = 0;
+        while ((nextRow = reader.readNext()) != null) {
+            if (nextRow.length == columnCount) {
+                for (int colCounter = 0; colCounter < columnCount; colCounter++) {
+                    values[colCounter][rowCounter] = nextRow[colCounter];
+                }
+                rowCounter++;
             }
         }
 
-        return new Table(columnNames, transposed_values, path.getFileName().toString());
+        br.close();
+        reader.close();
+
+        return new Table(columnNames, values, path.getFileName().toString());
     }
 
     public Dataset loadDataset(String folderPath, int minRows) {
@@ -62,11 +74,14 @@ public class Loader {
 
         for (File f : files) {
             try {
-                if ((int) Files.lines(f.toPath()).count() >= minRows) {
-                    tables.add(loadTable(f.toPath()));
+                Table t = loadTable(f.toPath(), minRows);
+
+                if (t != null) {
+                    tables.add(t);
                 }
             } catch (IOException | ArrayIndexOutOfBoundsException e) {
-                //System.out.println("Unable to load table: " + f.getName());
+                System.out.println("Unable to load table: " + f.getName());
+                System.out.println(e);
             }
         }
 
