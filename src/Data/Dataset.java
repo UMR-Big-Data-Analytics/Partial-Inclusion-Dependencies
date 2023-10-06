@@ -16,8 +16,8 @@ public class Dataset {
         List<List<List<String>>> listBasedDataset = new ArrayList<>(tables.size());
         for (Table table: tables) {
             List<List<String>> listBasedTable = new ArrayList<>(table.numCols);
-            for (String[] column : table.values) {
-                listBasedTable.add(Arrays.stream(column).sorted().distinct().toList());
+            for (List<String> column : table.values) {
+                listBasedTable.add(column.stream().sorted().distinct().toList());
             }
             listBasedDataset.add(listBasedTable);
         }
@@ -28,6 +28,6 @@ public class Dataset {
     public void printStatistics() {
         System.out.println("Dataset contains " + tables.size() + " tables totaling " +
                 tables.stream().mapToInt(x -> x.numCols).sum() + " columns and " +
-                tables.stream().mapToInt(x -> x.values[0].length).sum() + " rows.");
+                tables.stream().mapToInt(x -> x.values.get(0).size()).sum() + " rows.");
     }
 }

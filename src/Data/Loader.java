@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Loader {
@@ -46,15 +47,20 @@ public class Loader {
         br = new BufferedReader(new FileReader(path.toString()));
         reader = new CSVReader(br, delimiter);
         reader.readNext(); // skip column names
-        String[][] values = new String[columnCount][records];
+        List<List<String>> values = new LinkedList<>();
 
-        int rowCounter = 0;
+        for (int i = 0; i < columnCount; i++) {
+            values.add(new LinkedList<>());
+        }
+
+        int colCounter;
         while ((nextRow = reader.readNext()) != null) {
             if (nextRow.length == columnCount) {
-                for (int colCounter = 0; colCounter < columnCount; colCounter++) {
-                    values[colCounter][rowCounter] = nextRow[colCounter];
+                colCounter = 0;
+                for (List<String> col : values) {
+                    col.add(nextRow[colCounter]);
+                    colCounter++;
                 }
-                rowCounter++;
             }
         }
 
