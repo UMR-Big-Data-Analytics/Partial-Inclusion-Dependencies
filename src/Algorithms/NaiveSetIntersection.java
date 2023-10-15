@@ -2,6 +2,7 @@ package Algorithms;
 
 import Data.Dataset;
 import Data.Loader;
+import Utils.Utils;
 
 import java.util.*;
 
@@ -12,10 +13,12 @@ public class NaiveSetIntersection {
         long startTime = System.currentTimeMillis();
 
         List<List<HashSet<String>>> l = dataset.tables.stream()
-                .map(x -> Arrays.stream(x.values)
-                        .map(y -> new HashSet<>(List.of(y))).toList()).toList();
+                .map(x -> x.values.stream()
+                        .map(HashSet::new).toList()).toList();
 
-        int found = 0;
+        long setUpTime = System.currentTimeMillis() - startTime;
+
+        int pINDs = 0;
 
         for (int tableIndex = 0; tableIndex < dataset.tables.size(); tableIndex++) {
             for (int columnIndex = 0; columnIndex < dataset.tables.get(tableIndex).numCols; columnIndex++) {
@@ -36,7 +39,7 @@ public class NaiveSetIntersection {
                         copy.retainAll(testColumn);
                         int intersect = copy.size();
                         if (intersect >= minRequiredMatches) {
-                            found++;
+                            pINDs++;
                         }
                         testColumnIndex++;
                     }
@@ -47,13 +50,13 @@ public class NaiveSetIntersection {
 
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
-        System.out.println("Found " + found + " pINDs using a threshold of " + threshold +
-                ". Took: " + elapsedTime/1000 + "sec");
+        System.out.println(pINDs + " pINDs,\tt=" + threshold +
+                ",\tTook: " + Utils.printMillTime(elapsedTime) + " | " + Utils.printMillTime(setUpTime));
     }
 
     public static void main(String[] args) {
         Loader loader = new Loader(',');
-        Dataset dataset = loader.loadDataset("data/Catalog Data Gov", 20);
+        Dataset dataset = loader.loadDataset("data/T2D", 20);
 
         dataset.printStatistics();
 
@@ -64,17 +67,18 @@ public class NaiveSetIntersection {
 
     /*
     minRows = 20 - T2D
-    Found 37332 pINDs using a threshold of 1.0. Took: 56sec
-    Found 40017 pINDs using a threshold of 0.95. Took: 60sec
-    Found 43611 pINDs using a threshold of 0.9. Took: 58sec
-    Found 46109 pINDs using a threshold of 0.85. Took: 60sec
-    Found 48851 pINDs using a threshold of 0.8. Took: 56sec
-    Found 52434 pINDs using a threshold of 0.75. Took: 56sec
-    Found 54720 pINDs using a threshold of 0.7. Took: 56sec
-    Found 58764 pINDs using a threshold of 0.65. Took: 56sec
-    Found 61793 pINDs using a threshold of 0.6. Took: 56sec
-    Found 64884 pINDs using a threshold of 0.55. Took: 56sec
-    Found 87207 pINDs using a threshold of 0.5. Took: 56sec
+    Dataset contains 617 tables totaling 3017 columns and 194320 rows.
+    41715 pINDs,	t=1.0,	Took: 00h 01m 31s 0132ms | 00h 00m 00s 0046ms
+    44952 pINDs,	t=0.95,	Took: 00h 01m 31s 0677ms | 00h 00m 00s 0016ms
+    49365 pINDs,	t=0.9,	Took: 00h 01m 31s 0379ms | 00h 00m 00s 0016ms
+    52526 pINDs,	t=0.85,	Took: 00h 01m 33s 0134ms | 00h 00m 00s 0016ms
+    56374 pINDs,	t=0.8,	Took: 00h 01m 31s 0617ms | 00h 00m 00s 0016ms
+    60718 pINDs,	t=0.75,	Took: 00h 01m 31s 0443ms | 00h 00m 00s 0016ms
+    63618 pINDs,	t=0.7,	Took: 00h 01m 31s 0792ms | 00h 00m 00s 0016ms
+    68310 pINDs,	t=0.65,	Took: 00h 01m 34s 0568ms | 00h 00m 00s 0015ms
+    72108 pINDs,	t=0.6,	Took: 00h 01m 33s 0857ms | 00h 00m 00s 0016ms
+    76042 pINDs,	t=0.55,	Took: 00h 01m 34s 0032ms | 00h 00m 00s 0015ms
+    104181 pINDs,	t=0.5,	Took: 00h 01m 34s 0335ms | 00h 00m 00s 0015ms
      */
 }
 
