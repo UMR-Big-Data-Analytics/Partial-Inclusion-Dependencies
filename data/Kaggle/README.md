@@ -22,7 +22,7 @@ This dataset consists of various csv files found on Kaggle. My rather arbitrary 
 19) [Students Performance](https://www.kaggle.com/datasets/joebeachcapital/students-performance) 16. October 2023
 20) [10,000 Data about movies (1915 - 2023)](https://www.kaggle.com/datasets/willianoliveiragibin/10000-data-about-movies-1915-2023) 11. October 2023
 21) [USA Unemployment Rates by Demographics & Race](https://www.kaggle.com/datasets/asaniczka/unemployment-rates-by-demographics-1978-2023) 08. October 2023
-22) [Tourism - OECD](https://www.kaggle.com/datasets/zsinghrahulk/tourism-oecd/discussion) 09. October 2023
+22) [Tourism - OECD](https://www.kaggle.com/datasets/zsinghrahulk/tourism-oecd/data) 09. October 2023
 23) [5G Coverage Worldwide](https://www.kaggle.com/datasets/ddosad/5g-coverage-worldwide) 13. October 2023
 24) [💡 Worldwide Average IQ Levels 🧠](https://www.kaggle.com/datasets/abhijitdahatonde/worldwide-average-iq-levels) 15. October 2023
 25) [Melbourne Housing Snapshot](https://www.kaggle.com/datasets/dansbecker/melbourne-housing-snapshot) 2018
@@ -32,7 +32,15 @@ This dataset consists of various csv files found on Kaggle. My rather arbitrary 
 29) [Supermarket Sales](https://www.kaggle.com/datasets/alexhuitron/supermarket-sales) 02. Oktober 2023
 30) [Mobile Price Classification](https://www.kaggle.com/datasets/iabhishekofficial/mobile-price-classification) 2017
 31) [Ramen Ratings](https://www.kaggle.com/datasets/residentmario/ramen-ratings) 2017
-32) [Things on Reddit](https://www.kaggle.com/datasets/residentmario/things-on-reddit) 2017
+32) [Learning Path Index Dataset](https://www.kaggle.com/datasets/neomatrix369/learning-path-index-dataset?select=Learning+Pathway+Index.csv) 09. October 2023
+33) [Golf Play Dataset with Extended Features](https://www.kaggle.com/datasets/samybaladram/golf-play-extended) 14. October 2023
+34) [EEG data / Distance learning](https://www.kaggle.com/datasets/madyanomar/eeg-data-distance-learning-environment) 2021
+35) [Question and Answering](https://www.kaggle.com/datasets/sourabhsingh03993493/question-and-answering) July 2023
+36) [Udemy Dataset](https://www.kaggle.com/datasets/nesreenalqahtani/udemy-dataset) 2020
+37) [Egypt High School Grades (Sanwya Amma)](https://www.kaggle.com/datasets/raamyy/egypt-high-school-grades-sanwya-amma) 2021
+38) [Tamil Nadu School Data - SSA](https://www.kaggle.com/datasets/tecoholic/tamil-nadu-school-data-ssa) 2018
+39) [Employee attrition](https://www.kaggle.com/datasets/pranavsai98/predicting-employee-status) 2019
+40) [Glassdoor Data Analyst Postings 2019](https://www.kaggle.com/datasets/selvynmartinez/2019-data-analyst-jobcsv?select=2019_data_analyst_job.csv) 2022
 
 
 ## Dataset statistics
