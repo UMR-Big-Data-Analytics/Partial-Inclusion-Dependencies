@@ -1,0 +1,19 @@
+To ensure that the content of this thesis is readable by both experts and interested people we need to formulate notations and definitions. These will reappear multiple time within the thesis and they are needed to formulate precise observations and draw conclusions.
+
+\begin{definition}\label{def:attributes}
+    An attribute $\mathbb{X}$ is a collection of values. The values can have different data types. Every attribute has a fixed length. A collection of attributes $\mathbb{C} = \{\mathbb{X}_1, \mathbb{X}_2, ... \}$ is a set where all attributes have to be of equal length.
+\end{definition}
+
+% TODO %
+
+Inclusion Dependencies (INDs) represent a fundamental concept denoting formal relationships between attributes in a database schema. An Inclusion Dependency specifies that the values within one set of attributes are inherently included within the values of another set of attributes.
+
+\begin{definition}\label{def:inds}
+    An IND is written as $\mathbb{S}_1[\mathbb{C}_1] \subseteq \mathbb{S}_2[\mathbb{C}_2]$ where $\mathbb{C}_1$ and $\mathbb{C}_2$ are collections of attributes of equal size and $\mathbb{S}_1$ and $\mathbb{S}_2$ are schemes. An IND is valid, if and only if, for each tuple in $\mathbb{S}_1$, the values of attributes within $\mathbb{C}_1$ are also found within the corresponding attributes in $\mathbb{C}_2$ in $\mathbb{S}_2$.
+\end{definition}
+
+In essence, Inclusion Dependencies are a mechanism for expressing a more specific type of dependency between data elements within a database. These dependencies serve as an essential tool in the modeling and maintenance of database structures for various applications, including data integration, data cleaning, and data validation.
+
+\begin{theorem}
+    test
+\end{theorem}
