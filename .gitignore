@@ -1,6 +1,9 @@
 # Intellij
 .idea/
 
+# VSCode
+.vs/
+
 # Compiled class file
 *.class
 
