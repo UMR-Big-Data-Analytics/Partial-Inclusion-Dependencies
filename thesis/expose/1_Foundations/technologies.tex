@@ -1,0 +1,7 @@
+% In this document I want to talk about storage for relational databases SQL, csv files.
+% Explain that I will develop in Java
+Discovering inclusion dependencies is not a new problem. Over the years researchers have used a variety of technologies to improve performance. Starting with storage the two most common assumptions are either a relational database or structured storage files (e.g. CSV or TSV files). There are algorithms which rely on SQL for IND candidate validation
+%TODO add citations
+. Still the techniques used in the algorithms are not dependent on the input format or language of implementation. This is why we discuss algorithms without setting constraints on the input format or validation strategy. The thesis will assume the input to always be static files in CSV format. Nevertheless there have been efforts to collect all kinds of algorithms and integrate them into a single framework
+% TODO cite comparisson paper
+. The Metanome platform \cite{Papenbrock:2015:DPM:2824032.2824086} provides the framework for the stated implementations and the thesis will use the platform to execute tests on existing algorithms as well as contributing new algorithms and an implementations to run and display results of partial inclusion dependency algorithms. Metanome and existing implementation are written in Java which lead me to also pick Java as my language of choice.

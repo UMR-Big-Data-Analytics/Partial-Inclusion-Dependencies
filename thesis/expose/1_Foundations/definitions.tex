@@ -1,0 +1,55 @@
+To ensure that the content of this thesis is readable by both experts and interested people we need to formulate notations and definitions. These will reappear multiple times within the thesis and they are needed to formulate precise observations and draw conclusions.
+
+\begin{definition}[Attributes]\label{def:attributes}
+    An attribute $\mathbb{X}$ is a collection of values. The values can have different data types. Every attribute has a fixed length with is equal to the number of not necessarily unique values it contains. A collection of attributes $\mathbb{C} = \{\mathbb{X}_1, \mathbb{X}_2, ... \}$ is a set where all attributes have to be of equal length.
+\end{definition}
+
+\begin{definition}[Schemas]\label{def:schema}
+    Define schemas
+\end{definition}
+
+
+Inclusion Dependencies (INDs) represent a fundamental concept denoting formal relationships between attributes in a database schema. An Inclusion Dependency specifies that the values within one set of attributes are inherently included within the values of another set of attributes.
+
+\begin{definition}[Inclusion Dependencies]\label{def:inds}
+    An IND is written as $\mathbb{S}_1[\mathbb{C}_1] \subseteq \mathbb{S}_2[\mathbb{C}_2]$ where $\mathbb{C}_1$ and $\mathbb{C}_2$ are collections of attributes of equal size and $\mathbb{S}_1$ and $\mathbb{S}_2$ are schemes. An IND is valid, if and only if, for each tuple in $\mathbb{S}_1$, the values of attributes within $\mathbb{C}_1$ are also found within the corresponding attributes in $\mathbb{C}_2$ in $\mathbb{S}_2$.
+\end{definition}
+
+The complexity of discovering inclusion dependencies forms one of the hardest problems in computer science. More precisely, the discovery of all inclusion dependencies is W[3]-hard \cite{blasius2017parameterized}. %TODO explain W3
+
+The number of possible candidates for each attribute size can be calculated. Notice that the formula assumes that all IND the the layers before where valid. In natural language we search for the number of attribute combinations where each attribute is present at most once, allowing all permutations.
+\begin{definition}[Candidate Space]\label{def:candidates}
+    Let $\alpha$ be the fixed integer size of all possible $\mathbb{C}_i$. Let $m$ be the number of attributes. Let $k$ be the number of possible candidates ( $\mathbb{C}_i \subseteq \mathbb{C}_j$ where $i \not = j$ given $\alpha$.
+    $$
+        k = \binom{\alpha}{n} \cdot \binom{\alpha}{n-\alpha}.
+    $$
+    This formula holds if $\alpha \leq \lfloor \frac{n}{2} \rfloor$ else $k$ is $0$.
+\end{definition}
+% TODO Tabellen mit unterschiedlichen längen berücksichtigen.
+
+\begin{definition}[Partial Inclusion Dependencies]\label{def:pinds}
+    A pIND is written as $\mathbb{S}_1[\mathbb{C}_1] \subseteq_{\rho} \mathbb{S}_2[\mathbb{C}_2]$ where $\rho \in (0, 1]$ and the reaming notation is analog to \ref{def:inds}. Further this notation refers to sets of tuples, not considering the cardinally of duplicates. For the pIND $\mathbb{S}_1[\mathbb{C}_1] \subseteq_{\rho} \mathbb{S}_2[\mathbb{C}_2]$ to be valid
+    $$
+        \frac{|\{\mathbb{S}_1[\mathbb{C}_1]\} \cap \{\mathbb{S}_2[\mathbb{C}_2]\}|}
+            {|\{\mathbb{S}_1[\mathbb{C}_1]\}|} \geq \rho
+    $$
+    needs to be true.
+\end{definition}
+
+\begin{restatable}[Partial Inclusion Dependencies]{example}{pInd}\label{exmp:pInd}
+    Let us consider the two attributes $\mathbb{X}_1 = [1, 2, 3, 4]$ and $\mathbb{X}_2 = [1, 1, 2, 3]$. First we can conclude, that $\mathbb{X}_2 \subseteq \mathbb{X}_1$ if an inclusion dependency, since all values present in $\mathbb{X}_2$ also occur in $\mathbb{X}_1$. This also directly causes $\mathbb{X}_2 \subseteq_{1.0} \mathbb{X}_1$ to be a valid pIND. We will now calculate the maximal partial thresholds. Like inclusion dependencies, partial inclusion dependencies are not symmetrical, this requires us to perform two calculations. We already discovered $\mathbb{X}_2 \subseteq_{1.0} \mathbb{X}_1$, which implies the maximal threshold is $1$. Let us use the proposed formula for the other direction.
+    \begin{align*}
+        \frac{|\{\mathbb{X}_1\} \cap \{\mathbb{X}_2\}|}
+            {|\{\mathbb{X}_1\}|} & \geq \rho \\
+        \frac{|\{1, 2, 3, 4\} \cap \{1, 2, 3\}|}
+            {|\{1, 2, 3, 4\}|} & \geq \rho \\ 
+        \frac{|\{1, 2, 3\}|}
+            {|\{1, 2, 3, 4\}|} & \geq \rho \\
+        \frac{3}{4} & \geq \rho. \\ 
+    \end{align*}
+    We have found that when the threshold $\rho$ is less or equal to $0.75$, $\mathbb{X}_1 \subseteq_{\rho} \mathbb{X}_2$ is valid.
+\end{restatable}
+
+The complexity of discovering partial inclusion dependencies is inherit form the base problem. Since the complexity is calculated under a worst case assumption, it does not change when switching into the partial setting. We will later on discuss in detail how the time complexity behaves under varying thresholds (Section XX).  
+% Real world examples for pIND application
+
