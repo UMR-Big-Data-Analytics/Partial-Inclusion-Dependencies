@@ -1,3 +1,5 @@
+\chapter{Definitions}
+
 To ensure that the content of this thesis is readable by both experts and interested people we need to formulate notations and definitions. These will reappear multiple times within the thesis and they are needed to formulate precise observations and draw conclusions.
 
 \begin{definition}[Attributes]\label{def:attributes}
@@ -21,30 +23,32 @@ The number of possible candidates for each attribute size can be calculated. Not
 \begin{definition}[Candidate Space]\label{def:candidates}
     Let $\alpha$ be the fixed integer size of all possible $\mathbb{C}_i$. Let $m$ be the number of attributes. Let $k$ be the number of possible candidates ( $\mathbb{C}_i \subseteq \mathbb{C}_j$ where $i \not = j$ given $\alpha$.
     $$
-        k = \binom{\alpha}{n} \cdot \binom{\alpha}{n-\alpha}.
+        k = \binom{\alpha}{n} \cdot \binom{\alpha}{n-\alpha} \cdot 2 \cdot \alpha!.
     $$
     This formula holds if $\alpha \leq \lfloor \frac{n}{2} \rfloor$ else $k$ is $0$.
 \end{definition}
 % TODO Tabellen mit unterschiedlichen längen berücksichtigen.
 
 \begin{definition}[Partial Inclusion Dependencies]\label{def:pinds}
-    A pIND is written as $\mathbb{S}_1[\mathbb{C}_1] \subseteq_{\rho} \mathbb{S}_2[\mathbb{C}_2]$ where $\rho \in (0, 1]$ and the reaming notation is analog to \ref{def:inds}. Further this notation refers to sets of tuples, not considering the cardinally of duplicates. For the pIND $\mathbb{S}_1[\mathbb{C}_1] \subseteq_{\rho} \mathbb{S}_2[\mathbb{C}_2]$ to be valid
+    A partial inclusion dependency (pIND) is written as $\mathbb{S}_1[\mathbb{C}_1] \subseteq_{\rho} \mathbb{S}_2[\mathbb{C}_2]$ where $\rho \in (0, 1]$ and the reaming notation is analog to \ref{def:inds}. Further this notation refers to lists of tuples and takes the cardinality of duplicates into consideration. For the pIND $\mathbb{S}_1[\mathbb{C}_1] \subseteq_{\rho} \mathbb{S}_2[\mathbb{C}_2]$ to be valid
     $$
-        \frac{|\{\mathbb{S}_1[\mathbb{C}_1]\} \cap \{\mathbb{S}_2[\mathbb{C}_2]\}|}
-            {|\{\mathbb{S}_1[\mathbb{C}_1]\}|} \geq \rho
+        \frac{|\mathbb{S}_1[\mathbb{C}_1] \cap \mathbb{S}_2[\mathbb{C}_2]|}
+            {|\mathbb{S}_1[\mathbb{C}_1]|} \geq \rho
     $$
     needs to be true.
 \end{definition}
 
+In the proposed algorithms there is the option of considering duplicate cardinalities. If not explicitly mentioned otherwise this thesis always refers to partial inclusions that consider duplicate cardinality.
+
 \begin{restatable}[Partial Inclusion Dependencies]{example}{pInd}\label{exmp:pInd}
     Let us consider the two attributes $\mathbb{X}_1 = [1, 2, 3, 4]$ and $\mathbb{X}_2 = [1, 1, 2, 3]$. First we can conclude, that $\mathbb{X}_2 \subseteq \mathbb{X}_1$ if an inclusion dependency, since all values present in $\mathbb{X}_2$ also occur in $\mathbb{X}_1$. This also directly causes $\mathbb{X}_2 \subseteq_{1.0} \mathbb{X}_1$ to be a valid pIND. We will now calculate the maximal partial thresholds. Like inclusion dependencies, partial inclusion dependencies are not symmetrical, this requires us to perform two calculations. We already discovered $\mathbb{X}_2 \subseteq_{1.0} \mathbb{X}_1$, which implies the maximal threshold is $1$. Let us use the proposed formula for the other direction.
     \begin{align*}
-        \frac{|\{\mathbb{X}_1\} \cap \{\mathbb{X}_2\}|}
-            {|\{\mathbb{X}_1\}|} & \geq \rho \\
-        \frac{|\{1, 2, 3, 4\} \cap \{1, 2, 3\}|}
-            {|\{1, 2, 3, 4\}|} & \geq \rho \\ 
-        \frac{|\{1, 2, 3\}|}
-            {|\{1, 2, 3, 4\}|} & \geq \rho \\
+        \frac{|\mathbb{X}_1 \cap \mathbb{X}_2|}
+            {|\mathbb{X}_1|} & \geq \rho \\
+        \frac{|[1, 2, 3, 4] \cap [1, 2, 3]|}
+            {|[1, 2, 3, 4]|} & \geq \rho \\ 
+        \frac{|[1, 2, 3]|}
+            {|[1, 2, 3, 4]|} & \geq \rho \\
         \frac{3}{4} & \geq \rho. \\ 
     \end{align*}
     We have found that when the threshold $\rho$ is less or equal to $0.75$, $\mathbb{X}_1 \subseteq_{\rho} \mathbb{X}_2$ is valid.
