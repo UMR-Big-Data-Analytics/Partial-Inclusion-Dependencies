@@ -7,3 +7,5 @@ This section will cover approaches on efficient IND discovery. We will go over d
 % Decied on a set of algorithms
 - Erste Aufkommen
 - Vorschtellung + Diskussion Algos (eine Subsection pro Algo)
+
+In 1995 Bell and Brockhausen \cite{bell1995discovery} propose a graph-based approach to represent the relationships between attributes, allowing for a more efficient exploration of the search space. The algorithm is initiated with a complete directed graph, wherein all possible edges are initially included. A directed edge in the graph represents an inclusion dependency, which is read as the edge from $A_i$ to $A_j$ ($A_i \rightarrow A_j$) represents the IND $A_i \subseteq A_j$. It then proceeds to remove those edges that failed the IND check. To determine the validity of an edge, the algorithm checks for transitivity, which enables it to answer whether a dependency could exist between two variables based on their relationships with a third variable, which was tested previously. If it is ascertained that a dependency is impossible, the algorithm skips the test and directly removes the given edge, thereby reducing the overall computational cost.

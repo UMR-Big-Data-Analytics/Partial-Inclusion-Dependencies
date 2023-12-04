@@ -30,7 +30,7 @@ The number of possible candidates for each attribute size can be calculated. Not
 % TODO Tabellen mit unterschiedlichen längen berücksichtigen.
 
 \begin{definition}[Partial Inclusion Dependencies]\label{def:pinds}
-    A partial inclusion dependency (pIND) is written as $\mathbb{S}_1[\mathbb{C}_1] \subseteq_{\rho} \mathbb{S}_2[\mathbb{C}_2]$ where $\rho \in (0, 1]$ and the reaming notation is analog to \ref{def:inds}. Further this notation refers to lists of tuples and takes the cardinality of duplicates into consideration. For the pIND $\mathbb{S}_1[\mathbb{C}_1] \subseteq_{\rho} \mathbb{S}_2[\mathbb{C}_2]$ to be valid
+    A partial inclusion dependency (pIND) is written as $\mathbb{S}_1[\mathbb{C}_1] \subseteq_{\rho} \mathbb{S}_2[\mathbb{C}_2]$ where $\rho \in (0, 1]$ and the reaming notation is analog to \ref{def:inds}. Here, the $\rho$ interval is not including $0$ since this would mean everything is a pIND of everything else, which is a trivial case. Further this notation refers to lists of tuples and takes the cardinality of duplicates into consideration. For the pIND $\mathbb{S}_1[\mathbb{C}_1] \subseteq_{\rho} \mathbb{S}_2[\mathbb{C}_2]$ to be valid
     $$
         \frac{|\mathbb{S}_1[\mathbb{C}_1] \cap \mathbb{S}_2[\mathbb{C}_2]|}
             {|\mathbb{S}_1[\mathbb{C}_1]|} \geq \rho
@@ -39,6 +39,23 @@ The number of possible candidates for each attribute size can be calculated. Not
 \end{definition}
 
 In the proposed algorithms there is the option of considering duplicate cardinalities. If not explicitly mentioned otherwise this thesis always refers to partial inclusions that consider duplicate cardinality.
+
+\begin{restatable}[Partial Inclusion Dependency Properties]{theorem}{pInd}\label{theo:pInd}
+    Like inclusion dependencies, partial inclusion dependencies also full fill the reflexive rule. For any $\rho \in (0, 1]$ the partial inclusion dependency $\mathbb{S}_i[\mathbb{C}_j] \subseteq_{\rho} \mathbb{S}_i[\mathbb{C}_j]$ is valid.
+    \begin{align*}
+        \frac{|\mathbb{S}_i[\mathbb{C}_j] \cap \mathbb{S}_i[\mathbb{C}_j]|}
+            {|\mathbb{S}_i[\mathbb{C}_j]|} & \geq \rho \\
+        \frac{|\mathbb{S}_i[\mathbb{C}_j]|}
+            {|\mathbb{S}_i[\mathbb{C}_j]|} & \geq \rho \\
+            1 & \geq \rho
+     \end{align*}
+     Since $\rho$ is upper bounded by $1$ the last statement will always be true. \\
+
+     \noindent Contrary to INDs, pINDs do not generally respect transitivity if $\rho < 1$. We will proof this claim by contradiction. Assume $\mathbb{X}_1 = [1, 2, ..., 100], \mathbb{X}_2 = [2, ..., 1000], \mathbb{X}_3 = [10, 11, ..., 1000],$. If transitivity for any $\rho$ would hold, that we should find that for $\rho \in (0, 1]$ where $\mathbb{X}_1 \subseteq_\rho \mathbb{X}_2, \mathbb{X}_2 \subseteq_\rho \mathbb{X}_3$ are valid, $\mathbb{X}_1 \subseteq_\rho \mathbb{X}_3$ also needs to be valid. For the given example, if $\rho = 0.95$, we find a contradiction. \\
+
+     \noindent Lastly, INDs and also pINDs respect projection. Since this is a non trivial claim, we will now outline a proof for this claim.
+     % TODO Proof
+\end{restatable}
 
 \begin{restatable}[Partial Inclusion Dependencies]{example}{pInd}\label{exmp:pInd}
     Let us consider the two attributes $\mathbb{X}_1 = [1, 2, 3, 4]$ and $\mathbb{X}_2 = [1, 1, 2, 3]$. First we can conclude, that $\mathbb{X}_2 \subseteq \mathbb{X}_1$ if an inclusion dependency, since all values present in $\mathbb{X}_2$ also occur in $\mathbb{X}_1$. This also directly causes $\mathbb{X}_2 \subseteq_{1.0} \mathbb{X}_1$ to be a valid pIND. We will now calculate the maximal partial thresholds. Like inclusion dependencies, partial inclusion dependencies are not symmetrical, this requires us to perform two calculations. We already discovered $\mathbb{X}_2 \subseteq_{1.0} \mathbb{X}_1$, which implies the maximal threshold is $1$. Let us use the proposed formula for the other direction.
