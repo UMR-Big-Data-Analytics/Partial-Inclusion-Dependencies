@@ -53,8 +53,8 @@ In the proposed algorithms there is the option of considering duplicate cardinal
 
      \noindent Contrary to INDs, pINDs do not generally respect transitivity if $\rho < 1$. We will proof this claim by contradiction. Assume $\mathbb{X}_1 = [1, 2, ..., 100], \mathbb{X}_2 = [2, ..., 1000], \mathbb{X}_3 = [10, 11, ..., 1000],$. If transitivity for any $\rho$ would hold, that we should find that for $\rho \in (0, 1]$ where $\mathbb{X}_1 \subseteq_\rho \mathbb{X}_2, \mathbb{X}_2 \subseteq_\rho \mathbb{X}_3$ are valid, $\mathbb{X}_1 \subseteq_\rho \mathbb{X}_3$ also needs to be valid. For the given example, if $\rho = 0.95$, we find a contradiction. \\
 
-     \noindent Lastly, INDs and also pINDs respect projection. Since this is a non trivial claim, we will now outline a proof for this claim.
-     % TODO Proof
+     \noindent Lastly, INDs and also pINDs respect projection. We will now outline a proof for this claim. Consider the attributes $\mathbb{X}_1, \mathbb{X}_2, \mathbb{X}_3, \mathbb{X}_4$ where $\mathbb{X}_1$ and $\mathbb{X}_2$ are in the same relation and $\mathbb{X}_3$ and $\mathbb{X}_4$ are in the same relation. Assume $\mathbb{X}_1, \mathbb{X}_2 \subseteq_\rho \mathbb{X}_3 \mathbb{X}_4$ is valid for some $\rho \in (0, 1]$. If projection holds, this implies that $\mathbb{X}_1 \subseteq_\rho \mathbb{X}_3$ and $\mathbb{X}_2 \subseteq_\rho \mathbb{X}_4$ have to be valid as well. If we now only consider the portion (with reduced size $\rho\%$) which satisfies $\mathbb{X}_1, \mathbb{X}_2 \subseteq_1 \mathbb{X}_3 \mathbb{X}_4$ we can use the known properties for INDs and conclude that for at least $\rho\%$ $\mathbb{X}_1 \subseteq_1 \mathbb{X}_3$ and $\mathbb{X}_2 \subseteq_1 \mathbb{X}_4$ has to be valid. This also directly implies that $\mathbb{X}_1 \subseteq_\rho \mathbb{X}_3$ and $\mathbb{X}_2 \subseteq_\rho \mathbb{X}_4$ will be true if the remaining $1-\rho$ values are added again. \\
+     This property is very important for search space pruning, which is the single most important task for (p)IND discovery \cite{liu2010discover}.
 \end{restatable}
 
 \begin{restatable}[Partial Inclusion Dependencies]{example}{pInd}\label{exmp:pInd}
