@@ -8,14 +8,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Loader {
     private final char delimiter;
-    private String tempPath = "/temp/";
 
     public Loader(char delimiter) {
         this.delimiter = delimiter;
@@ -23,7 +21,6 @@ public class Loader {
 
     public Loader(char delimiter, String tempPath) {
         this.delimiter = delimiter;
-        this.tempPath = tempPath;
     }
 
     public Table loadTable(Path path) throws IOException {
@@ -81,30 +78,5 @@ public class Loader {
 
         return new Dataset(tables);
 
-    }
-
-    private int getMetadataTag(String value) {
-
-        try {
-            Integer.parseInt(value);
-            return 1;
-        } catch (NumberFormatException ignored) {}
-
-        try {
-            Long.parseLong(value);
-            return 2;
-        } catch (NumberFormatException ignored) {}
-
-        try {
-            Double.parseDouble(value);
-            return 3;
-        }
-        catch (NumberFormatException ignored) {}
-
-        try {
-            Date.from(Instant.parse(value));
-            return 3;
-        }
-        catch (NumberFormatException ignored) {}
     }
 }

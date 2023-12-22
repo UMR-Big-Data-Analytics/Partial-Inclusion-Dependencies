@@ -10,7 +10,7 @@ public class Metadata {
 
     private int total;
     private int distinct;
-    private int[] types;
+    private final int[] types;
     private final String[] typeMap;
 
     Set<String> distinctValues;
@@ -25,6 +25,29 @@ public class Metadata {
             values.put(s, new HashMap<>());
         }
     }
+
+    /**
+     * Worst case pruner that considers the type distributions and duplicates.
+     * Answers if self can be a pIND of other attribute.
+     * @param other Metadata of the attribute that should be tested against.
+     * @param threshold partiality threshold.
+     * @return Ture if the pIND is possible, False if not.
+     */
+    public boolean typePossible(Metadata other, double threshold) {
+        int[] otherTypes = other.getTypes();
+        int mismatchesLeft = (int) (total * (1- threshold));
+        for (int i = 0; i < types.length; i++) {
+            // TODO: compare amounts
+            // this is a non-sense calculation
+            mismatchesLeft -= otherTypes[i] - types[i];
+            if (mismatchesLeft < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int[] getTypes() {return types;}
 
     public void insertValue(String s) {
         int typeIndex = getMetadataTag(s);
