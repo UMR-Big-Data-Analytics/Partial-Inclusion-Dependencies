@@ -80,17 +80,7 @@
     \include{core/title_page/title_page}
 
     \pagestyle{plain}
-
-    \addchap{Abstract}
-    \input{preface/abstract}
-
-    \selectlanguage{ngerman}
-    \addchap{Zusammenfassung}
-    \input{preface/abstractGerman}
     \selectlanguage{american}
-
-    \addchap{Acknowledgments}
-    \input{preface/acknowledgments}
 
     \setuptoc{toc}{totoc}
     \tableofcontents
@@ -106,7 +96,7 @@
     %% Please add the content of your thesis here. %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    \part{Foundation}
+    %\part{Foundation}
 
     \input{1_Foundations/definitions}
         
@@ -116,27 +106,19 @@
     \section{Related Work}
     \input{1_Foundations/related_work}
 
-    \part{Partial Inclusion Dependencies}
-    
-    \chapter{Metadata Extraction and Storage}
+    % \part{Partial Inclusion Dependencies}
 
     \input{2_Partial-Inclusion-Dependencies/pIND-graph}
     
-    \part{Results}
+    % \part{Results}
     \input{3_Results/Datasets}
+
+    \chapter{Proposals}
+    \input{4_Proposals/proposals}
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% End of adding your content. %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-    % Add the following chapters not to the current ›part‹ but one level above instead.
-    \makeatletter
-        \def\toclevel@chapter{-1}
-        \def\toclevel@section{0}
-    \makeatother
-
-    \chapter{Conclusions \& Outlook}
-    \input{conclusions/conclusions}
 
     % Following are the files and commands for the bibliography and the author’s publications.
     \pagestyle{plain}
@@ -145,9 +127,6 @@
     \printbibheading
     \addcontentsline{toc}{chapter}{Bibliography}
     \printbibliography[heading = none]
-
-    \addchap{Declaration of Authorship}
-    \input{core/declaration_of_authorship/declaration_of_authorship}
 
 
 \end{document}
