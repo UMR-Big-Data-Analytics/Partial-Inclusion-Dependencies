@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="commons-lang3-3.13.0" level="application" />
     <orderEntry type="library" name="opencsv-3.8" level="application" />
+    <orderEntry type="library" name="guava-23.6-jre" level="application" />
   </component>
 </module>
