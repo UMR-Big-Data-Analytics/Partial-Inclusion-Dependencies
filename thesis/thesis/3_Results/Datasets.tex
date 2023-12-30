@@ -1,0 +1,17 @@
+\chapter{Datasets}
+To understand the performance of the proposed algorithms it is crucial to perform testing on a variety of data sets. For this purpose we will gather some real word data sets. Further we will create synthetic data sets that aim on edge cases to see if the performance is strongly dependent on structural assumptions.
+
+\section{Real World Data Sets}
+There are many sources for csv or tsv files online. I have decided to gather data from the US Government\footnote{\href{https://data.gov}{data.gov}}, the European Union \footnote{\href{https://data.europe.eu}{data.europe.eu}}, Kaggle, \footnote{\href{https://kaggle.com}{Kaggle.com}}, Musicbrainz \footnote{\href{https://musicbrainz.org/}{musicbrainz.org}}, Eurostat \footnote{https://ec.europa.eu/} 
+
+% TODO: MORE
+
+\section{Synthetic Data Sets}
+To evaluate the proposed algorithms under detailed aspects, we will generate synthetic data sets. The strategies and claims are based on \cite{jordon2022synthetic} synthetic data can be defined as \textit{data that has been generated using a purpose-built mathematical model or algorithm, with the aim of solving a (set of) data science task(s).} While we will not try to train a model with the synthetic data, it is still of great use for us, since we have absolute knowledge about the underlying structures. The decision is based on the fact that there is a lot of real word data available, since open data is a growing market which expected to grow even further \cite{EUopenData}. Synthetic data on the other hand enables us to evaluate the algorithm performances on edge cases, which we may not be able to find in the selection of real world data sets. \\
+
+To test certain edge cases of the proposed algorithms, we will construct various edge case data sets. The \textit{SameSame} dataset consists of 32 attributes and 250.000 records. Each attribute carries the numbers 1 to 250.000 in the natural order. This means every attribute is a (partial) inclusion dependency of every other attribute. The same obviously also holds for combinations of columns. We will now calculate the expected number if (p)INDs in each layer. Since all candidates are perfect matches, the chosen threshold $\rho$ will not influence the number of pINDs. For u-nary INDs we find $\frac{32 \cdot (32 + 1)}{2} = 528$ candidates and therefore also 528 INDs. The remaining layers will be calculated using the candidate formula previously defined (Section \ref{def:candidates}). Table % TODO add ref
+shows the number of candidates/pINDs for the \textit{SameSame} dateset.
+% TODO calculate INDs
+The edge case to test here is, how well the algorithm can understand equality relations and prune the candidate space. While this may seem like an unlikely edge case we will also investigate how often this happens in real world data sets.
+% write about real world structures
+

@@ -1,20 +1,187 @@
-@Inproceedings{firstDemoReference,
-    author    = {My Name and A Co-Author},
-    title     = {Useless Stuff That No One Cares About},
-    booktitle = {\bibstoc{coolest}{XX}},
-    year      = {2025},
-    pages     = {42--1337},
-    publisher = ACM,
-    numpages  = {1296},
+% paper stating that knowledge about inclusion dependencies helps the query optimizer
+@inproceedings{gryz1998query,
+  title={Query folding with inclusion dependencies},
+  author={Gryz, Jarek},
+  booktitle={Proceedings 14th International Conference on Data Engineering},
+  pages={126--133},
+  year={1998},
+  organization={IEEE}
 }
 
-@Article{secondDemoReference,
-    author    = {My Name and First Co-Author and Second Co-Author and Third Co-Author and Fourth Co-Author},
-    title     = {Dear Lord! How Did This Get Accepted?},
-    journal   = ZMLGM,
-    year      = {2030},
-    volume    = {42},
-    number    = {1},
-    pages     = {2--1024},
-    publisher = {No Clue},
+% importance of inclusion dependencies when looking at database/schema desing
+@article{levene2000justification,
+  title={Justification for inclusion dependency normal form},
+  author={Levene, Mark and Vincent, Millist W},
+  journal={IEEE Transactions on Knowledge and Data Engineering},
+  volume={12},
+  number={2},
+  pages={281--291},
+  year={2000},
+  publisher={IEEE}
+}
+
+% outlining the importance of inclusion dependencies in relational databases
+@inproceedings{casanova1982inclusion,
+  title={Inclusion dependencies and their interaction with functional dependencies},
+  author={Casanova, Marco A and Fagin, Ronald and Papadimitriou, Christos H},
+  booktitle={Proceedings of the 1st ACM SIGACT-SIGMOD symposium on Principles of database systems},
+  pages={171--176},
+  year={1982}
+}
+
+% IND is W[3] hard
+@inproceedings{blasius2017parameterized,
+  title={The parameterized complexity of dependency detection in relational databases},
+  author={Bl{\"a}sius, Thomas and Friedrich, Tobias and Schirneck, Martin},
+  booktitle={11th International Symposium on Parameterized and Exact Computation (IPEC 2016)},
+  year={2017},
+  organization={Schloss Dagstuhl-Leibniz-Zentrum fuer Informatik}
+}
+
+% Metanome
+@article{Papenbrock:2015:DPM:2824032.2824086,
+ author = {Papenbrock, Thorsten and Bergmann, Tanja and Finke, Moritz and Zwiener, Jakob and Naumann, Felix},
+ title = {Data Profiling with Metanome},
+ journal = {Proc. VLDB Endow.},
+ issue_date = {August 2015},
+ volume = {8},
+ number = {12},
+ month = aug,
+ year = {2015},
+ issn = {2150-8097},
+ pages = {1860--1863},
+ numpages = {4},
+ url = {http://dx.doi.org/10.14778/2824032.2824086},
+ doi = {10.14778/2824032.2824086},
+ acmid = {2824086},
+ publisher = {VLDB Endowment},
+}
+
+% Data doubles every two years
+@article{gantz2012digital,
+  title={The digital universe in 2020: Big data, bigger digital shadows, and biggest growth in the far east},
+  author={Gantz, John and Reinsel, David},
+  journal={IDC iView: IDC Analyze the future},
+  volume={2007},
+  number={2012},
+  pages={1--16},
+  year={2012}
+}
+
+% B&B Algo
+@book{bell1995discovery,
+  title={Discovery of data dependencies in relational databases},
+  author={Bell, Siegfried and Brockhausen, Peter},
+  year={1995},
+  publisher={Citeseer}
+}
+
+% Properties and strategy review
+@article{liu2010discover,
+  title={Discover dependencies from data—a review},
+  author={Liu, Jixue and Li, Jiuyong and Liu, Chengfei and Chen, Yongfeng},
+  journal={IEEE Transactions on Knowledge and Data Engineering},
+  volume={24},
+  number={2},
+  pages={251--264},
+  year={2010},
+  publisher={IEEE}
+}
+
+% related work, known concepts of INDs
+@inproceedings{date1981referential,
+  title={Referential integrity},
+  author={Date, CJ},
+  booktitle={Proceedings of the seventh international conference on Very Large Data Bases-Volume 7},
+  pages={2--12},
+  year={1981}
+}
+
+% Binder Paper
+@article{papenbrock2015divide,
+  title={Divide \& conquer-based inclusion dependency discovery},
+  author={Papenbrock, Thorsten and Kruse, Sebastian and Quian{\'e}-Ruiz, Jorge-Arnulfo and Naumann, Felix},
+  journal={Proceedings of the VLDB Endowment},
+  volume={8},
+  number={7},
+  pages={774--785},
+  year={2015},
+  publisher={VLDB Endowment}
+}
+
+% C++ impl of Spinder using Desbordante
+@inproceedings{smirnov2023fast,
+  title={Fast Discovery of Inclusion Dependencies with Desbordante},
+  author={Smirnov, Alexander and Chizhov, Anton and Shchuckin, Ilya and Bobrov, Nikita and Chernishev, George},
+  booktitle={2023 33rd Conference of Open Innovations Association (FRUCT)},
+  pages={264--275},
+  year={2023},
+  organization={IEEE}
+}
+
+% IND comparison paper
+@inproceedings{dursch2019inclusion,
+ author = {D\"{u}rsch, Falco and Stebner, Axel and Windheuser, Fabian and Fischer, Maxi and Friedrich, Tim and Strelow, Nils and Bleifu\ss, Tobias and Harmouch, Hazar and Jiang, Lan and Papenbrock, Thorsten and Naumann, Felix},
+ title = {Inclusion Dependency Discovery: An Experimental Evaluation of Thirteen Algorithms},
+ booktitle = {Proceedings of the 28th ACM International Conference on Information and Knowledge Management},
+ series = {CIKM '19},
+ year = {2019},
+ pages = {219--228},
+ doi = {10.1145/3357384.3357916},
+ publisher = {ACM}
+}
+
+% SAWFISH sim based IND algo
+@article{kaminsky2023discovering,
+  title={Discovering Similarity Inclusion Dependencies},
+  author={Kaminsky, Youri and Pena, Eduardo HM and Naumann, Felix},
+  journal={Proceedings of the ACM on Management of Data},
+  volume={1},
+  number={1},
+  pages={1--24},
+  year={2023},
+  publisher={ACM New York, NY, USA}
+}
+
+% partial SPIDER
+@inproceedings{bauckmann2006efficiently,
+  title={Efficiently detecting inclusion dependencies},
+  author={Bauckmann, Jana and Leser, Ulf and Naumann, Felix and Tietz, V{\'e}ronique},
+  booktitle={2007 IEEE 23rd International Conference on Data Engineering},
+  pages={1448--1450},
+  year={2006},
+  organization={IEEE}
+}
+
+% Synthetic Data - what, why and how?
+@article{jordon2022synthetic,
+  title={Synthetic Data--what, why and how?},
+  author={Jordon, James and Szpruch, Lukasz and Houssiau, Florimond and Bottarelli, Mirko and Cherubin, Giovanni and Maple, Carsten and Cohen, Samuel N and Weller, Adrian},
+  journal={arXiv preprint arXiv:2205.03257},
+  year={2022}
+}
+
+% EU open data report
+@misc{EUopenData,
+  title = {Open Data Impact - European Union},
+  howpublished = {\url{https://data.europa.eu/en/publications/open-data-impact}},
+  year={2022},
+  note = {Accessed: 2023-12-08}
+}
+
+% Data Integration for todays economy and time factors
+@inproceedings{halevy2006data,
+  title={Data integration: The teenage years},
+  author={Halevy, Alon and Rajaraman, Anand and Ordille, Joann},
+  booktitle={Proceedings of the 32nd international conference on Very large data bases},
+  pages={9--16},
+  year={2006}
+}
+
+% Papenbrock diss
+@phdthesis{papenbrock2017data,
+  title={Data profiling-efficient discovery of dependencies},
+  author={Papenbrock, Thorsten},
+  year={2017},
+  school={Universit{\"a}t Potsdam}
 }

@@ -1,0 +1,45 @@
+% own proposal to deal with unary IND discovery.
+% Introduce the idea of a more mature graph structure than B&B
+% Explain initialization and transformations during execution.
+
+\chapter{Partial Inclusion Graph}
+In this thesis, I aim to investigate the potential of a metadata graph for accelerating the process of discovering pINDs. By leveraging the relationships and patterns inherent in a metadata graph, it is possible to develop heuristic algorithms that can identify the most promising candidates for further investigation, thereby reducing the number of experiments required and accelerating the discovery process. The main research question of this thesis is whether the overhead associated with creating and maintaining the metadata graph is outweighed by the time savings achieved through the use of these algorithms.
+
+\section{Nodes and Edges}
+The directed Graph $G = (V, E)$ will initially have two nodes for every attribute (or attribute collection) the number of attributes will be referenced by $n$, which implies that there will be $2n$ initial nodes. We will go over why two nodes per attribute are necessary in Section \ref{sec:comb_nodes}. Every attribute $\mathbb{X}_i$ will be represented by a node $\mathbb{X}_i^-$ and a node $\mathbb{X}_i^+$. Initially, every node $\mathbb{X}_i^+$ is connected to every other node $\mathbb{X}_j^-$ where $i \not = j$. An edge $\mathbb{X}_i^+ \rightarrow \mathbb{X}_j^-$ represents the pIND candidate $\mathbb{X}_i \subseteq_\rho \mathbb{X}_j$. The positive ($\mathbb{X}^+$) node therefor handles in which other nodes the node itself is partially included, while the negative node ($\mathbb{X}^-$) handles partial inclusions of the node. At this point all edges are directed from positive nodes towards negative nodes, in the final initialization step we will add $n$ edges from negative to positive nodes. The edges being $\mathbb{X}_i^- \rightarrow \mathbb{X}_i^+$ for all $i \in 1, \dots, n$. In total there will be $n^2$ initial edges. Usually the number of attributes is way smaller than the number of records, which means the quadratic edge growth will not be the limiting factor. The number of edges will be referenced by $m$. Every node carries information about the data types of the values in the attribute (or collection of attributes). An example for meta data inside a node can be seen in Table \ref{tab:node_metadata}. To understand the extraction process of the meta data, refer to section \ref{sec:meta-data-ext}. An edge can either be uncertain or valid, once we know an edge is invalid, it is deleted from the graph. The inclusion of an invalid sate in a proper graph gives us more flexibility in the testing order compared to the, from Bell and Brockhausen proposed, iterative list validation process \cite{bell1995discovery}.
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{l|l}
+        Name & Value \\
+        \hline
+        Cardinality & 100 \\
+        Distinct & 95 \\
+        Integer & 35 \\
+        Long & 0 \\
+        Double & 15 \\
+        Date & 0 \\
+        String & 50
+    \end{tabular}
+    \caption{Metadata stored in a node (Example Values).}
+    \label{tab:node_metadata}
+\end{table}
+
+\section{Combining Nodes}\label{sec:comb_nodes}
+Whenever two attributes (or collections of attributes) satisfy $\mathbb{X}_1 \subseteq_1 \mathbb{X}_2$ and $\mathbb{X}_2 \subseteq_1 \mathbb{X}_1$ we know that they have to carry the exact same values. In a non partial setting we would now be able to treat these attributes as the same one since $\mathbb{X}_i \subseteq_1 \mathbb{X}_1 \iff \mathbb{X}_i \subseteq_1 \mathbb{X}_2$ and $\mathbb{X}_1 \subseteq_1 \mathbb{X}_i \iff \mathbb{X}_2 \subseteq_1 \mathbb{X}_i$ are true statements for every other attribute $\mathbb{X}_i$ in the candidate space. The transitivity property can be used to easily proof the stated claim in a non partial IND setting. Within the partial setting, the problem lies in the distribution of duplicates. Since the present duplicates could be different, we might not be able to treat the two attributes as the same one.
+
+\begin{restatable}[Node Knowledge]{example}{node_knowledge}\label{exmp:node_knowledge}
+    Let $\mathbb{X}_1 = [1, 1, 2, 3], \mathbb{X}_2 = [1, 2, 2, 3]$ and $\mathbb{X}_3 = [2, 3]$. Since the values in $\mathbb{X}_1$ and $\mathbb{X}_2$ are the same ($\mathbb{X}_1 \subseteq_1 \mathbb{X}_2$ and $\mathbb{X}_2 \subseteq_1 \mathbb{X}_1$) we can conclude that $\mathbb{X}_3 \subseteq_\rho \mathbb{X}_1 \iff \mathbb{X}_3 \subseteq_\rho \mathbb{X}_2$ for any given $\rho \in (0, 1]$. Looking at the opposite direction, we can not draw the same conclusion. $\mathbb{X}_1 \subseteq_\rho \mathbb{X}_3$ is valid for $\rho \leq 0.5$ while $\mathbb{X}_2 \subseteq_\rho \mathbb{X}_3$ is valid for $\rho \leq 0.75$.
+\end{restatable}
+
+ To deal with these problems we will explore the possibility of a semi-merge. Meaning only the positive parts of a node get merged if the duplication distribution differs.
+
+\section{Meta Data Extraction}\label{sec:meta-data-ext}
+While reading in a table we keep track of the present meta data types in order to construct the proposed structure in \ref{tab:node_metadata}.
+
+\section{Meta Data Invalidation}
+The concept is to utilize the gathered metadata to invalidate candidates without requiring the actual data. This process is conducted once immediately after loading the data. Subsequently, we continuously update the metadata to identify more invalid candidates. To understand candidates that can be directly invalidated, let us go over an example showcasing the process of the proposed method. Let $\mathbb{X}_1, \mathbb{X}_2$ be attributes of some (not necessarily) the same relation.
+\begin{itemize}
+    \item[1.] \textbf{Uniqueness Pruning.} Whenever the number of unique values in $\mathbb{X}_1$ is strictly greater than $(1 + \rho)$ times the total values of $\mathbb{X}_2$, $\mathbb{X}_1 \subseteq_\rho \mathbb{X}_2$ can not be valid. Since we consider the unique values of $\mathbb{X}_1$ and the total number for $\mathbb{X}_2$ this claim is valid, regardless of the distribution of duplicates.
+    \item[2.] \textbf{Data Type Pruning.} To prune a candidate $\mathbb{X}_1 \subseteq_\rho \mathbb{X}_2$ based on data types it is important to consider duplicates. We will therefore examine two experiments to understand which performs better.
+\end{itemize}
