@@ -7,13 +7,13 @@ To ensure that the content of this thesis is readable by both experts and a gene
 
 \begin{restatable}[Schemata and Attributes]{example}{schema}\label{exmp:schema}
 % Rewrite
-You can think of schema as a table and an attribute as a column in that table. If you think about picking multiple columns of some table, that would be an attribute list ($X$). Now every row has more than one value (a tuple of values, $u$), but every row has the exact same number of values (all tuple cardinalities are equal).
+A relational instance can be thought of as a table where the schema is the structure of that table. An attribute can be imagined as a column in some table. If you think about picking multiple columns of some table, that would be an attribute list ($X$). Now every row has more than one value (a tuple of values, $u$), but every row has the exact same number of values (all tuple cardinalities are equal).
 \end{restatable}
 
 \noindent Inclusion Dependencies (INDs) represent a fundamental concept, denoting formal relationships between attributes in a database schema. An IND specifies that the values within one set of attributes are inherently included within the values of another set of attributes.
 
 \begin{definition}[Inclusion Dependencies]\label{def:inds}
-    Given two relational instances $r_i$ from $R_i$ and $r_j$ from $R_j$. An IND is defined as $R_i[X] \subseteq R_j[Y] \iff \forall \: u \in r_i, \exists \: v \in r_j such that u[X] = v[Y]$. This condition can only hold if the cardinality of $X$ is equal to the cardinality of $Y$. We further call the left hand side (here $R_i[X]$) the dependent attribute(s) and the right hand side the referenced attribute(s).
+    Given two relational instances $r_i$ from $R_i$ and $r_j$ from $R_j$. An IND is defined as $R_i[X] \subseteq R_j[Y] \iff \forall \: u \in r_i[X], \exists \: v \in r_j[Y] \text{ such that } u[X] = v[Y]$. This condition can only hold if the cardinality of $X$ is equal to the cardinality of $Y$. We further call the left hand side (here $R_i[X]$) the dependent attribute(s) and the right hand side the referenced attribute(s).
 \end{definition}
 
 \begin{restatable}[Inclusion Dependencies]{example}{IND}\label{exmp:IND}
@@ -45,19 +45,19 @@ You can think of schema as a table and an attribute as a column in that table. I
     \label{tab:relExamp}
 \end{table}
 
-The complexity of discovering inclusion dependencies forms one of the hardest problems in computer science. More precisely, the discovery of all inclusion dependencies is W[3]-hard \cite{blasius2017parameterized}. This makes IND discovery one of the hardest problems in computer science. The number of possible candidates for each attribute size can be calculated. Notice that the formula assumes that all IND the the layers before where valid. In natural language we search for the number of attribute combinations where each attribute is present at most once, allowing all permutations.
+\noindent The complexity of discovering inclusion dependencies forms one of the hardest problems in computer science. More precisely, the discovery of all inclusion dependencies is W[3]-hard \cite{blasius2017parameterized}. This makes IND discovery one of the hardest problems in computer science. The number of possible candidates for each attribute size can be calculated. Notice that the formula below assumes that all IND of layers before where valid. In natural language, we search for the number of attribute combinations where each attribute is present at most once, allowing all permutations.
 
 \begin{definition}[Candidate Space]\label{def:candidates}
-    Let $\alpha$ be the fixed integer size of all possible $X_i$. Let $m$ be the number of attributes. Let $k$ be the number of possible candidates ( $X_i \subseteq X_j$ where $i \not = j$ given $\alpha$).
+    Let $\alpha$ be the fixed integer size of all possible $X_i$. Let $m$ be the number of attributes. Let $k$ be the number of possible candidates ($X_i \cap X_j = \emptyset$ where $i \not = j$ given $\alpha$).
     \[
         k = \underbracket{\binom{m}{\alpha}\cdot \alpha ! }_{\text{Left hand side combinations}} \cdot \underbracket{\binom{m-\alpha}{\alpha}\cdot \alpha!}_\text{Right hand side combinations}.
     \]
     This formula holds if $\alpha \leq \lfloor \frac{n}{2} \rfloor$ else $k$ is $0$.
 \end{definition}
-% TODO Tabellen mit unterschiedlichen längen berücksichtigen.
-In a multi schema setting this calculation becomes more difficult. We now need to consider which schema can form which inter schema candidates while allowing intra schema candidates.
+
+\noindent In a multi schema setting this calculation becomes more difficult. We now need to consider which schema can form which inter schema candidates while allowing intra schema candidates.
 \begin{definition}[Candidate Space (Multi-Schema)]\label{def:candidates-MS}
-    We will first define a function $q_r(\alpha, \tau)$, which computes the candidate a single schema ($r$) can produce, given $\alpha$, the size of combinations and $\tau$ an indicator, whether or not the schema was already used for the other side.
+    We will first define a function $q_r(\alpha, \tau)$, which computes the candidates a single relation ($r$) can produce, given $\alpha$, the size of combinations and $\tau$ an indicator, whether or not the schema was already used for the other side.
 
     \begin{align*}
         q_r(\alpha, \tau) = \begin{cases}
@@ -66,15 +66,14 @@ In a multi schema setting this calculation becomes more difficult. We now need t
             \binom{|r| - \alpha}{\alpha}\cdot \alpha!, & \text{if } \tau
         \end{cases}
     \end{align*}
-
-    The calculate the possible candidates $k$ for a fixed $\alpha$ over schema $r_1, \dots, r_n$ we need to compute:
+    Using this helper function we can calculate the possible candidates $k$ for a fixed $\alpha$ over schema $r_1, \dots, r_n$ by computing:
     $$
-        k = \sum\limits_{i = 1}^n q_{r_i}(\alpha, FALSE) \cdot \sum\limits_{i = 1}^n q_{r_i}(\alpha, TRUE)
+        k = \sum\limits_{i = 1}^n q_{r_i}(\alpha, FALSE) \cdot \sum\limits_{i = 1}^n q_{r_i}(\alpha, TRUE).
     $$
 \end{definition}
 
 \begin{definition}[Partial Inclusion Dependencies]\label{def:pinds}
-    A partial inclusion dependency (pIND) is written as $r_1[X] \subseteq_{\rho} r_2[Y]$ where $\rho \in (0, 1]$ and the reaming notation is analog to \ref{def:inds}. Here, the $\rho$ interval is not including $0$ since this would mean everything is a pIND of everything else, which is a trivial case. Further this notation refers to lists of tuples and takes the cardinality of duplicates into consideration. For the pIND $r_1[X] \subseteq_{\rho} r_2[Y]$ to be valid
+    A partial inclusion dependency (pIND) is written as $r_1[X] \subseteq_{\rho} r_2[Y]$ where $\rho \in (0, 1]$ and the reaming notation is analog to Definition \ref{def:inds}. Here, the $\rho$ interval is not including $0$ since this would mean everything is a pIND of everything else, which is a trivial case. Further this notation refers to lists of tuples and takes the cardinality of duplicates into consideration. For the pIND $r_1[X] \subseteq_{\rho} r_2[Y]$ to be valid
     $$
         \frac{|r_1[X] \cap r_2[Y]|}
             {|r_1[X]|} \geq \rho
@@ -82,12 +81,15 @@ In a multi schema setting this calculation becomes more difficult. We now need t
     needs to be true.
 \end{definition}
 
-\noindent This definition uses the $\cap$ operator, which is usually used in set theory and defined for sets. Here the operator conducts the operation \textit{remove all elements from the dependent attribute, that are not present in the referenced attribute}. Therefore the referenced attribute could be a set in a sense that the duplication distribution only matters for the dependent attribute.\\
+\noindent 
+This definition uses the $\cap$ operator, which is usually used in set theory and defined for sets. 
+The definitions adaptation of the operator is $r_1[X] \cap r_2[Y] = u \in r_1[X] \: | \: \exists \; v \in r_2[Y] : u = v$.
+In natural language the operator conducts the operation \textit{"remove all elements from the dependent attribute, that are not present at least once in the referenced attribute"}. Therefore the referenced attribute could also be a set in a sense that the duplication distribution only matters for the dependent attribute.\\
 
-In the proposed algorithms there is the option of considering duplicate cardinalities. If not explicitly mentioned otherwise this thesis always refers to partial inclusions that consider duplicate cardinality.
+\noindent In the proposed algorithms there should the option of considering duplicate cardinalities. If not explicitly mentioned otherwise this thesis always refers to partial inclusions that consider duplicate cardinality.
 
 \begin{restatable}[Partial Inclusion Dependency Properties]{theorem}{pInd}\label{theo:pInd}
-    Like inclusion dependencies, partial inclusion dependencies also full fill the reflexive rule. For any $\rho \in (0, 1]$ the partial inclusion dependency $r_i[X_j] \subseteq_{\rho} r_i[X_j]$ is valid.
+    Like inclusion dependencies, partial inclusion dependencies also fulfill the reflexive rule. For any $\rho \in (0, 1]$ the partial inclusion dependency $r_i[X_j] \subseteq_{\rho} r_i[X_j]$ is valid.
     \begin{align*}
         \frac{|r_i[X_j] \cap r_i[X_j]|}
             {|r_i[X_j]|} & \geq \rho \\
@@ -116,5 +118,5 @@ In the proposed algorithms there is the option of considering duplicate cardinal
     We have found that when the threshold $\rho$ is less or equal to $0.75$, $r_1[X] \subseteq_{\rho} r_2[Y]$ is valid.
 \end{restatable}
 
-The complexity of discovering partial inclusion dependencies is inherit form the base problem. Since the complexity is calculated under a worst case assumption, it does not change when switching into the partial setting. The thesis we will discuss in detail how the time complexity behaves under varying thresholds.
+\noindent The complexity of discovering partial inclusion dependencies is inherited form the base problem. Since the complexity is calculated under a worst case assumption, it does not change when switching into the partial setting. The thesis will discuss in detail how the time complexity behaves under varying thresholds.
 
