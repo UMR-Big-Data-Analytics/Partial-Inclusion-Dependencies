@@ -55,8 +55,8 @@ public class NaiveSetIntersection {
     }
 
     public static void main(String[] args) {
-        Loader loader = new Loader(',');
-        Dataset dataset = loader.loadDataset("data/T2D", 20);
+        Loader loader = new Loader('\t');
+        Dataset dataset = loader.loadDataset("data/Ensembl");
 
         dataset.printStatistics();
 
