@@ -43,3 +43,7 @@ replay_pid*
 *.out
 *.run.xml
 *.synctex.gz
+
+# data folder
+data/
+!data/*.md
