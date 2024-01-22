@@ -1,0 +1,7 @@
+\section{Parializing BINDER}
+The \textit{BINDER} Algorithm \cite{papenbrock2015divide} is a IND discovery Algorithm which uses a divide and conquer technique to efficiently find unary and nary INDs. It was shown that \textit{BINDER} outperforms other exact, non-distributed state-of-the-art algorithms in both unary and nary settings \cite{dursch2019inclusion}. Due to its strong performance, this thesis offers a adapted version of \textit{BINDER} which can handle partial INDs, called \textit{pBINDER}.
+
+\subsection{Existing Code}
+The original \textit{Binder} paper does not have a direct linkage to the source code used for the experiments. For the work conducted by Dürsch et al. on the comparisson of multiple IND discovery algorithms, they published an implementation of \textit{BINDER} through GitHub\footnote{https://github.com/HPI-Information-Systems/inclusion-dependency-algorithms}. After talking to Thorsten Papenbrock, it turns out the source code found there is almost equal to the original code. The problem here lies within the poor structure of the code. It is basically of big 1.5k+ line file. Since a code base like this is neither readable nor well maintainable, I conducted a clean up and published the code through a repository of my own. % TODO footnote to github
+During the process of cleaning \textit{BINDER} I also bumped the needed dependencies to their most recent versions.
+% TODO test performance of rewrite and original
