@@ -10,5 +10,11 @@ I use a 1GB and a 5GB version of TPC-H for performance measurements.
 
 ## Config for TPC-H
 ```java
-TODO
+case TPCH_1:
+    this.databaseName = "TPCH_<SIZE>";
+    this.tableNames = new String[]{"customer", "lineitem", "nation", "orders", "part", "partsupp", "region" "supplier"};
+    this.inputFileSeparator = '|';
+    this.inputFileHasHeader = false;
+    this.inputFileEnding = ".tbl";
 ```
+The `<SIZE>` varibale should be equal to the generated size.
