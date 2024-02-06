@@ -8,7 +8,7 @@ There are different approaches on how \textit{NULL} entries are treated. None of
 is less valid than another, but one needs to choose a treatment. We will now discuss the
 three common approaches on treating \textit{NULL} entries and discuss how they affect pIND discovery.
 
-\subsection{The \textit{unknown} interpretation}
+\subsection*{The \textit{unknown} interpretation}
 @article{codd1979extending,
   title={Extending the database relational model to capture more meaning},
   author={Codd, Edgar F},
@@ -27,15 +27,8 @@ Our search for pINDs expects a static data input and would need to be re-run in 
 Therefor the \textit{unknown} interpretation does not provide us with usable inforation. We would rather have the
 expert user decide between one of the following interpretations.
 
-\subsection{The \textit{subset} interpretation}
-This interpretation is similar to an interpretation known as \textit{more informative tuples}.
-@inproceedings{zaniolo1982database,
-  title={Database relations with null values},
-  author={Zaniolo, Carlo},
-  booktitle={Proceedings of the 1st ACM SIGACT-SIGMOD symposium on Principles of database systems},
-  pages={27--33},
-  year={1982}
-}
+\subsection*{The \textit{subset} interpretation}
+This interpretation is similar to an interpretation known as \textit{more informative tuples} \cite{zaniolo1982database}.
 A \textit{more informative tuple} relation is a relation between two tuples $t_1$ and $t_2$ with attributes $A$ and $B$
 where for every $a \in A$ where $t_1[a] \not = NULL$, $a \in B$ and $t_1[a] = t_2[a]$ are valid. Under this notation,
 $t_2$ carries the entire inforation of $t_1$, but potentially contains more inforation for the $NULL$ entries of $t_1$.
@@ -44,17 +37,17 @@ For pIND discovery we now consider a \textit{subset} interpretation. Given two r
 $X \in r_1$ and $Y \in r_2$ where $|X| = |Y|$. We define $r_1[X] \subseteq_\rho r_2[Y]$ as valid if there are at least $\lfloor |r_1[X]| \cdot \rho \rfloor$
 tuples in $r_1[X]$ for which a \textit{more informative tuple} exists in $r_2[Y]$.
 
-\subsection{The \textit{foreign} interpretation}
+\subsection*{The \textit{foreign} interpretation}
 A slight variation of the \textit{subset} interpretation. The difference being the added constraint that the referenced side is not allowed to
 carry \textit{NULL} values. The motivation for this interpretation is the detection of foreign keys.
 % TODO: Write how this only is a difference in the unary discovery, since the n-ary generation will automatically catch this constraint
 
-\subsection{The \textit{equality} interpretation}
+\subsection*{The \textit{equality} interpretation}
 This interpretation could be considered a somewhat optimistic version of the \textit{unknown} interpretation in a sense that we consider all $NULL$ entries as being equal.
 The result is equal to the other approaches, if we consider $NULL$ as just another explicit value.
 Logically this interpretation should be chosen if $NULL$ implicitly defines an value which can not be expressed explicitly (e.g. infinity in a numeric column).
 
-\subsection{The \textit{inequality} interpretation}
+\subsection*{The \textit{inequality} interpretation}
 The pessimistic version of the \textit{unknown} interpretation. Here we consider every $NULL$ entry as an distinct value.
 Therefor the comparison between two entries $x$ and $y$ where one or both are $NULL$ always yields false.
 We are in a setting where $NULL$ entires are considered not yet filled and we choose a worst case scenario where the

@@ -50,7 +50,7 @@ A relational instance can be thought of as a table where the schema is the struc
 \begin{definition}[Candidate Space]\label{def:candidates}
     Let $\alpha$ be the fixed integer size of all possible $X_i$. Let $m$ be the number of attributes. Let $k$ be the number of possible candidates ($X_i \cap X_j = \emptyset$ where $i \not = j$ given $\alpha$).
     \[
-        k = \underbracket{\binom{m}{\alpha}\cdot \alpha ! }_{\text{Left hand side combinations}} \cdot \underbracket{\binom{m-\alpha}{\alpha}\cdot \alpha!}_\text{Right hand side combinations}.
+        k = \underbrace{\binom{m}{\alpha}\cdot \alpha ! }_{\text{Left hand side combinations}} \cdot \underbrace{\binom{m-\alpha}{\alpha}\cdot \alpha!}_\text{Right hand side combinations}.
     \]
     This formula holds if $\alpha \leq \lfloor \frac{n}{2} \rfloor$ else $k$ is $0$.
 \end{definition}
