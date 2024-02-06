@@ -1,0 +1,3 @@
+[submodule "pSPIDER"]
+	path = pSPIDER
+	url = https://github.com/Jakob-L-M/partial-SPIDER.git
