@@ -2,11 +2,8 @@
 % properly include citations
 
 Relational databases can include \textit{NULL} or \textit{EMPTY} values.
-The allowance of such values originates from % TODO: write why null makes sense
-% The ANSI/SPARC interim report [1] cites 14 possible manifestations of null - ANSI/X3/SPARC Study Group on Data Base Management Systems, Interim Report, ANSI, February 1975. 
-There are different approaches on how \textit{NULL} entries are treated. None of the approaches
-is less valid than another, but one needs to choose a treatment. We will now discuss the
-three common approaches on treating \textit{NULL} entries and discuss how they affect pIND discovery.
+The allowance of such values can originate from my different sources like historic expansions of a database, missing or lost data, unknown values or entries which simply can not be filled with any concrete value. For the treatment of these values there are two main interpretations. %cite https://dl.acm.org/doi/pdf/10.1145/582095.582123  
+Entries which are undefined and not relevant, and entires which are missing even tho they are relevant.Using these interpretations we will now define and discuss different approaches on how \textit{NULL} entries are treated. None of the approaches is less valid than another, but one needs to choose a treatment.
 
 \subsection*{The \textit{unknown} interpretation}
 @article{codd1979extending,
@@ -19,7 +16,7 @@ three common approaches on treating \textit{NULL} entries and discuss how they a
   year={1979},
   publisher={ACM New York, NY, USA}
 }
-In the interpretation the truth value of $x = y$ where $x$ or $y$ or both are \textit{NULL} is considered as unknown.
+In this interpretation the truth value of $x = y$ where $x$ or $y$ or both are \textit{NULL} is considered as unknown.
 It is not true or false, but rather lies under the assumption that the \textit{NULL} entry could be filled using some,
 possibly distinct value. This interpretation of \textit{NULL} entries causes inclusion or equality operations to also
 return neither true or false, but also an \textit{unknown} truth statement.
@@ -44,13 +41,8 @@ carry \textit{NULL} values. The motivation for this interpretation is the detect
 
 \subsection*{The \textit{equality} interpretation}
 This interpretation could be considered a somewhat optimistic version of the \textit{unknown} interpretation in a sense that we consider all $NULL$ entries as being equal.
-The result is equal to the other approaches, if we consider $NULL$ as just another explicit value.
-Logically this interpretation should be chosen if $NULL$ implicitly defines an value which can not be expressed explicitly (e.g. infinity in a numeric column).
+The result is equal to the subset approach, if we consider $NULL$ as just another explicit value.
+Logically this interpretation should be chosen if $NULL$ implicitly defines an value which can not be expressed explicitly (e.g. infinity in a numeric column), but still holds meaning and is expected in the referenced for a valid pIND.
 
 \subsection*{The \textit{inequality} interpretation}
-The pessimistic version of the \textit{unknown} interpretation. Here we consider every $NULL$ entry as an distinct value.
-Therefor the comparison between two entries $x$ and $y$ where one or both are $NULL$ always yields false.
-We are in a setting where $NULL$ entires are considered not yet filled and we choose a worst case scenario where the
-replacement values are all distinct form each other and the relation itself.
-In a non-partial setting this would restrict an attribute with at least one $NULL$ entry from forming and INDs. Applying
-a partial setting, there is still a chance, that attributes with only a few $NULL$ entries are able to form pINDs.
+The pessimistic version of the \textit{unknown} interpretation. Here we consider every $NULL$ entry as an distinct value. Therefor the comparison between two entries $x$ and $y$ where one or both are $NULL$ always yields false. We are in a setting where $NULL$ entires are considered not yet filled and we choose a worst case scenario where the replacement values are all distinct form each other and the relation itself. In a non-partial setting this would restrict an attribute with at least one $NULL$ entry from forming any INDs. Applying a partial setting, there is still a chance, that attributes with only a few $NULL$ entries are able to form pINDs.

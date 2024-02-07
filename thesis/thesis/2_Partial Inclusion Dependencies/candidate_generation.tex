@@ -4,3 +4,5 @@
 - what are equal (p)IND representations
  - formal attribute and entry permutation
 - prove the generation method
+
+Given two relational instances $r_1$ and $r_2$ and attributes $X, Y \in r_1$, $Z, W \in r_2$, we call the pIND candidates $r_1[X,Y] \subseteq_\rho r_2[Z,W]$ and $r_1[Y,X] \subseteq_\rho r_2[W,Z]$ equal since each is only valid if and only if the other is valid. Generating these duplicate candidates does not provide more value to a user and further increases the computational effort. Therefore we will discuss a candidate generation approach which avoids all duplicate candidates.
