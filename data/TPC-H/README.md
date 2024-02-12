@@ -5,6 +5,8 @@ The TPC-H (Transaction Processing Performance Council Benchmark H) dataset is a 
 Download the provided generation tools from the [TPC Website](https://www.tpc.org/). Complie the dbgen tool.
 Using the command `dbgen -vf -s <SIZE>` an instance of TPC-H of size `<SIZE>`GB is created. The generated `.tbl` files are `|` seperated. They do not have a header.
 
+As a last step, we use `remove_tail_seperator.py` to remove the tailing seperator which is present in the file.
+
 ## Usage within project
 I use a 1GB and a 5GB version of TPC-H for performance measurements.
 
