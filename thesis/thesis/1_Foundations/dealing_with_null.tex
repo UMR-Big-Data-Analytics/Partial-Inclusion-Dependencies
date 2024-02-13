@@ -6,17 +6,7 @@ The allowance of such values can originate from my different sources like histor
 Entries which are undefined and not relevant, and entires which are missing even tho they are relevant.Using these interpretations we will now define and discuss different approaches on how \textit{NULL} entries are treated. None of the approaches is less valid than another, but one needs to choose a treatment.
 
 \subsection*{The \textit{unknown} interpretation}
-@article{codd1979extending,
-  title={Extending the database relational model to capture more meaning},
-  author={Codd, Edgar F},
-  journal={ACM Transactions on Database Systems (TODS)},
-  volume={4},
-  number={4},
-  pages={397--434},
-  year={1979},
-  publisher={ACM New York, NY, USA}
-}
-In this interpretation the truth value of $x = y$ where $x$ or $y$ or both are \textit{NULL} is considered as unknown.
+In this interpretation the truth value of $x = y$ where $x$ or $y$ or both are \textit{NULL} is considered as unknown \cite{codd1979extending}.
 It is not true or false, but rather lies under the assumption that the \textit{NULL} entry could be filled using some,
 possibly distinct value. This interpretation of \textit{NULL} entries causes inclusion or equality operations to also
 return neither true or false, but also an \textit{unknown} truth statement.
