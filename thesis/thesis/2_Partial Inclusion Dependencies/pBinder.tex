@@ -7,6 +7,9 @@ The original \textit{BINDER} paper does not have a direct linkage to the source 
 \subsection{Validator Adjustments}
 The Validator of $BINDER$ handles the invalidation of IND candidates. Initially the algorithm assumes, that all candidates are valid. Whenever we find a conflicting value, meaning a value which is present in the depended side but not in the referenced side of a candidate, the validator removes the given candidate. To consider partial INDs we need to expand $BINDER$ such that the validator keeps track of the number of validations and only removes a candidate, if more validations than a given threshold have happened.
 
+It is important to not that the partial $BINDER$ ($pBINDER$) implementation only supports a duplicate aware mode %TODO REF
+. The concept and efficiency of $BINDER$ lies in the divide and conquer approach. The attributes are split into a set buckets using hash functions, such that the first bucket of each attribute maps the same subspace of values, e.g. there are $n$ buckets and we choses $hashCode \% n$ as the separation function. During the validation, the buckets are iterated in some order. At some point of the validation, we might already know, that the attribute is no longer included in any candidate. Loading the bucket now would be a waste of compute resources. There for we precisely skip these buckets. While this is great in a computational sense, $BINDER$ has no way of counting the number of distinct values, if not all buckets are loaded, especially if we would like to know the number of distinct values before the validation starts. Implementing duplicate unaware pIND discovery into $pBINDER$ would divert the algorithm too much from the original algorithm too a point where discussing the newly introduced complexity of pIND discovery would not make sense.
+
 
 
 \begin{algorithm}
