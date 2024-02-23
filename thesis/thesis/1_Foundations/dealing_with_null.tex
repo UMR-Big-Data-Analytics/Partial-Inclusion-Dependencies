@@ -30,9 +30,14 @@ carry \textit{NULL} values. The motivation for this interpretation is the detect
 % TODO: Write how this only is a difference in the unary discovery, since the n-ary generation will automatically catch this constraint
 
 \subsection*{The \textit{equality} interpretation}
-This interpretation could be considered a somewhat optimistic version of the \textit{unknown} interpretation in a sense that we consider all $NULL$ entries as being equal.
-The result is equal to the subset approach, if we consider $NULL$ as just another explicit value.
-Logically this interpretation should be chosen if $NULL$ implicitly defines an value which can not be expressed explicitly (e.g. infinity in a numeric column), but still holds meaning and is expected in the referenced for a valid pIND.
+This interpretation could be considered a somewhat optimistic version of the \textit{unknown} interpretation in a sense that we consider all $NULL$ entries as being equal. The result is equal to the subset approach, if we consider $NULL$ as just another explicit value. Logically this interpretation should be chosen if $NULL$ implicitly defines an value which can not be expressed explicitly (e.g. infinity in a numeric column), but still holds meaning and is expected in the referenced for a valid pIND.
 
 \subsection*{The \textit{inequality} interpretation}
 The pessimistic version of the \textit{unknown} interpretation. Here we consider every $NULL$ entry as an distinct value. Therefor the comparison between two entries $x$ and $y$ where one or both are $NULL$ always yields false. We are in a setting where $NULL$ entires are considered not yet filled and we choose a worst case scenario where the replacement values are all distinct form each other and the relation itself. In a non-partial setting this would restrict an attribute with at least one $NULL$ entry from forming any INDs. Applying a partial setting, there is still a chance, that attributes with only a few $NULL$ entries are able to form pINDs.
+
+This interpretation is equal to the certain world concept. No matter how the $NULL$ values would be set, the found pINDs will stay valid.
+
+\subsection*{Possible World}
+In a possible world, all pINDs that could become valid under some $NULL$ replacement, are considered valid. This creates a whole new complexity layer when trying to choose the optimal $NULL$ replacements. If a referenced attribute has $n$ $NULL$ entries, we could avoid $n$ violations. If we do not care about deduplicates, this is easy to implementation, since we can increase the possible violations of a candidate by the number of $NULL$ in the referenced attribute. Should be care about deduplicates, this situation becomes more difficult. The optimal way of replacing $NULL$ would be to pick the $n$ values in the dependant attribute with the most occurrences which do not appear in the referenced. That way we avoid the highest number of violations. For this to work, we would need to keep track of the top $n$ highest occurring values, which create a violation. Since $n$ might be very big, we might not be able to store a priority queue or something similar in main memory, and would there for need to store these values on disk.
+
+The described problems are certainly solvable, but are out of scope for the thesis. For this reason, the algorithms do not offer pIND discovery in a possible world setting.
