@@ -1,3 +1,9 @@
 [submodule "pSPIDER"]
 	path = pSPIDER
 	url = https://github.com/Jakob-L-M/partial-SPIDER.git
+[submodule "partial-BINDER"]
+	path = partial-BINDER
+	url = https://github.com/Jakob-L-M/partial-BINDER
+[submodule "spind"]
+	path = spind
+	url = https://github.com/Jakob-L-M/spind
