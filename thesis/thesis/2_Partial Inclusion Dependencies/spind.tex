@@ -1,0 +1,17 @@
+We will now discuss our proposed algorithm $SPIND$, which stands for \textbf{s}calable \textbf{p}artial \textbf{in}clusion \textbf{d}ependencies. Further the german word $Spind$ is a closet and often multiple "Spinds" are placed next to each other. This is a metaphor to the algorithms procedure. Every input relation will be transformed to a "Spind" of sorted values with connected attributes (attribute combinations), which is surely bigger than a $BINDER$ bucket, but there are far fewer "Spinds" than $BINDER$ would create buckets.
+
+\subsection{Chunking the input relations}
+Modern CPUs have multiple cores which can execute tasks in parallel. Most of the related work did not try to utilize multi-threading. $SPIND$ will multi-thread as many parts of the execution as possible to best utilize the available hardware. This goal requires us to find independent tasks which can be processes independent of each other. \\
+
+\noindent The execution starts by fetching some very basic information about the input relations. For each relational instance (input table) $SPIND$ will extract the header column (if present) and store the number of columns each table has. Using a constant set by the user, $CHUNK_SIZE$, we spilt each relation into somewhat equal parts. Each chunk will consist of at most $\lfloor \frac{CHUNK_SIZE}{# cloumns \: in \: relation} \rfloor$ rows. The complexity of processing a relation directly depends on the number of total values in that relation. While this may be an oversimplification since there are many more factors, like the distribution of duplicate values, the raw size is easy to modify and a heuristic that can be applied without any specific dataset knowledge. Each of the resulting chunks is associated with exactly one relation and carries a subset of that relations rows. \\
+
+\noindent Chunking is done exactly once at the very start and is not repeated for n-ary layers. We reuse the same chunks in every layer of the n-ary pIND discovery. \\
+
+\noindent Since $SPIND$ almost always operates on the relation layer, a hash based partitioning, similar to $BINDER$, is not feasible. For the validation, we need to descend to the attribute layer and there we need to know which attributes share which values. If we partition the rows using a hash function, we could never guarantee some separation for every attribute (combination) without descending to the attribute layer already and therefore facing the same issues as $BINDER$.
+
+\subsection{Sorting Chunks}
+Once the chunks are created we want to sort each of them. Sorting is needed for the later validation.
+
+\subsection{Merging (spilled) Chunks}
+
+\subsection{Validation}
