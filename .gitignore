@@ -37,6 +37,7 @@ replay_pid*
 *.aux
 *.bbl
 *.blg
+*.toc
 *.bcf
 *.fdb_latexmk
 *.fls
