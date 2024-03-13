@@ -1,4 +1,4 @@
-\section{Parializing BINDER}
+\section{Partial BINDER}
 The \textit{BINDER} Algorithm \cite{papenbrock2015divide} is a IND discovery Algorithm which uses a divide and conquer technique to efficiently find unary and nary INDs. It was shown that \textit{BINDER} outperforms other exact, non-distributed state-of-the-art algorithms in both unary and nary settings \cite{dursch2019inclusion}. Due to its strong performance, this thesis offers a adapted version of \textit{BINDER} which can handle partial INDs, called \textit{pBINDER}.
 
 \subsection{Existing Code}
@@ -17,7 +17,7 @@ It is important to not that the partial $BINDER$ ($pBINDER$) implementation only
     \hspace*{\algorithmicindent} \textbf{Input:} value, valueGroup, pINDCandidates
     \begin{algorithmic}[1]
     \For{attribute in valueGroup}
-        \State occurrences = attribute.getOccurrences(value)
+        \State $occurrences = attribute.getOccurrences(value)$
         \For{candidate in pINDCandidates}
             \If{candidate.dependant $\not =$ attribute} 
                 \State \textbf{continue}

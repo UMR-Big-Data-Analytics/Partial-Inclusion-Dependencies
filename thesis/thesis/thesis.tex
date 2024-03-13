@@ -37,7 +37,7 @@
 %    \boldNumberSetsfalse % Use this value if you want variables for number sets (like N or R) to appear in blackboard bold rather than bold.
 
     % The title of the thesis. The first argument is for the English name, the second is for the German name.
-    \myTitle{My Very Long, Informative, Expressive, and Definitely Fancy Title}{Eine adäquate Übersetzung meines Titels}
+    \myTitle{Partial Inclusion Dependency Discovery}{Findung parieller Inklusionsabhängigkeiten}
 
     % The author’s name.
     \myName{Jakob Leander Müller}
@@ -46,7 +46,7 @@
     \myProgram{Data Science}
 
     % The date when the thesis will be handed in.
-    \dateOfHandingIn{XX. Februar 2024}
+    \dateOfHandingIn{XX. Juli 2024}
 
      % The name and affiliation of the author’s supervisor.
     \nameOfMySupervisor{Prof.\,Dr. Thorsten Papenbrock}
@@ -58,7 +58,7 @@
     \mySubject{A cool bachelor/master thesis.}
 
     % Some keywords of the thesis. These information will be used for the PDF meta data. Please use | as a separator and try to avoid commas.
-    \myKeywords{bachelor--master thesis | world-changing | very important | please like and share and subscribe}
+    \myKeywords{master thesis | inclusion dependencies | partial dependencies}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% End of options to adjust. %%%%%%%%%
@@ -115,19 +115,24 @@
     \input{1_Foundations/technologies}
     
     \section{Null Entries}
-    \input{1_Foundations/dealing_with_null.tex}
+    \input{1_Foundations/dealing_with_null}
 
     \chapter{Related Work}
     \input{1_Foundations/related_work}
 
     \part{Partial Inclusion Dependencies}
-
-    \section{Data Sets}
-    \include{2_Partial Inclusion Dependencies/Datasets}
     
-    \chapter{Metadata Extraction and Storage}
+    \include{2_Partial Inclusion Dependencies/pSpider}
+    
+    \include{2_Partial Inclusion Dependencies/candidate_generation}
+    
+    \include{2_Partial Inclusion Dependencies/pBinder}
+
+    \include{2_Partial Inclusion Dependencies/spind}
 
     \part{Results}
+    \section{Data Sets}
+    \include{3_Results/Datasets}
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% End of adding your content. %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
