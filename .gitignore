@@ -44,8 +44,7 @@ replay_pid*
 *.out
 *.run.xml
 *.synctex.gz
-*.pdf
 
 # data folder
-data/
+data/*[!.md]
 !data/*.md
