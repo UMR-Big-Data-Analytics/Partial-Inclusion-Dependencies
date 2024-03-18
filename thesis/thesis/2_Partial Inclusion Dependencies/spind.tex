@@ -33,6 +33,21 @@ To find such groups we would need knowledge of all values in a relation. Even if
     \end{tabular}
 \end{center}
 
+\subsection{Probabilistic Filtering}
+Assume there was a set of all values, which only occur in referred attributes. Such a set could be used to filter the values that would need to be sorted, merged and validated. How the filter is filled and where exactly it is used will be discussed in the sorting and validation sections. This section will explain the reason why such a filter can be used in the first way and which benefits it brings.
+
+Given two projections $r_1[X]$ and $r_2[Y]$ and the candidate $r_1[X] \subseteq_\rho r_2[Y]$ than we can trivially see that placing $r_2[Y]$ into the calculation will always yield the same result as placing $r_2[Y] \setminus \text{\{ref only values\}}$ into the equation.
+
+Since we may not be able to actually keep all of the values in main memory, we need a different approach of filtering the values. An important observation being, that we need to be certain, that all values which are present in at least one dependant attribute need to make it through the filter. If values which are only in dependant attributes make it through the filter, that creates more computational complexity, but will not create any incorrect results.
+
+These constraints can be full filled by build a probabilistic in which all values that appear in an dependant attribute at least once are stored. Such a filter can than be queried using a value to check if that value was added. If the value was added previously it will always return true. If the values was not added it may create a false positive at a rate of typically less than 5\%. There are multiple options for such filters.
+
+% Bloom section
+
+% Chukoo section
+
+% Bit Fuse section
+
 \subsection{Sorting Chunks}
 Once the chunks are created we want to sort each of them. Sorting is needed for the later validation. Every chunk is processed in the same way and processing is executed in parallel. We attach a $CSVReader$ to a chuck and provide the information, which attributes (attribute combinations) are relevant. Assume we are in the third layer and the only candidates which are connected with the relation of the chuck are the column combination $[1, 2, 3]$ and the column combination $[4, 5, 1]$. We would pass these relevant combinations as a list. Now the chuck is processed line by line, where we update the connected attributes to their current value after the line is read. We update a map which maps present values to the attributes which carry them, including the number of occurrences. This results in a two layer map. First the value is mapped to the connected attributes and then the connected attribute is mapped to the occurrences. Eventually this process would overflow the available main memory. Therefor we limit the size of the map by a constant called $SORT\_SIZE$. Once the map size reaches this constant or we finished sorting, we need to save the values to disk. First, the key set of the outer map is sorted by the included values. Afterwards we iterate over the sorted keys and persist each entry by first writing a line containing the value and then a line containing the persisted attributes. The attributes are persisted in the pattern $"attributeId_1,occurrences_1;attributeId_2,occurrences_2;...;"$. Figure \ref{fig:sorting} offers an illustration of this process. Persisting the connected attributes like that enables efficient merging of chunks later. For every file that is created, we store the path of the sorted (sub) chunk and in the end return that list.
 
@@ -48,5 +63,5 @@ We now have a bunch of files which are all sorted by themselves. The next step i
 % TODO decide on default and perform experiments
 
 \subsection{Validation}
-The validation process expects a sorted file per relation. The whole idea of the process works analog to the validation performed by \textit{SPIDER}. Given the sorted files we check which attributes (attribute combinations) share value and move the readers forward bit by bit in a way that only those readers are updated which share the same smallest value. \textit{SPIDER} uses a priority queue which stores the head value of each reader. Such a data structure enables us to calculate the smallest of the head values in $log(M)$ time, $M$ being the number of attributes (attribute combinations). Assume the complexity of pruning the connected attributes to some value is $O(k)$. Validating all values $N$ would cost $O(k \cdot N \cdot log(M))$. Pruning is a synchronous task, meaning the active candidates need to be synchronized between every prune. We will therefor try to create the attribute groups in parallel and conduct pruning in parallel.
+The validation process expects a sorted file per relation. The whole idea of the process works analog to the validation performed by \textit{SPIDER}. Given the sorted files we check which attributes (attribute combinations) share value and move the readers forward bit by bit in a way that only those readers are updated which share the same smallest value. \textit{SPIDER} uses a priority queue which stores the head value of each reader. Such a data structure enables us to calculate the smallest of the head values in $log(M)$ time, $M$ being the number of attributes (attribute combinations). Assume the complexity of pruning the connected attributes to some value is $O(k)$. Validating all values $N$ would cost $O(k \cdot N \cdot log(M))$. Pruning is a synchronous task, meaning the active candidates need to be synchronized between every prune. We will therefor try to create the attribute groups in parallel and conduct pruning in the main thread.
 
