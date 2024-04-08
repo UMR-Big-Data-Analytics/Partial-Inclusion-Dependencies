@@ -1,0 +1,256 @@
+
+  <!DOCTYPE html>
+  <html lang="en">
+  <body>
+  <script src="https://unpkg.com/gojs@2.3.16/release/go.js"></script>
+  <script src="https://unpkg.com/gojs@2.3.16/extensions/Figures.js"></script>
+  <textarea id="mySavedModel" style="width: 30vw; height: 10vh;">
+   
+  </textarea>
+  <div id="allSampleContent" class="p-4 w-full">
+    <script id="code">
+
+      class TreeNode extends go.Node {
+    findVisibleNode() {
+      // redirect links to lowest visible "ancestor" in the tree
+      var n = this;
+      while (n !== null && !n.isVisible()) {
+        n = n.findTreeParentNode();
+      }
+      return n;
+    }
+  }
+  // end TreeNode
+
+  // Control how Mapping links are routed:
+  // - "Normal": normal routing with fixed fromEndSegmentLength & toEndSegmentLength
+  // - "ToGroup": so that the link routes stop at the edge of the group,
+  //     rather than going all the way to the connected nodes
+  // - "ToNode": so that they go all the way to the connected nodes
+  //     but only bend at the edge of the group
+  var ROUTINGSTYLE = "ToGroup";
+
+  // If you want the regular routing where the Link.[from/to]EndSegmentLength controls
+  // the length of the horizontal segment adjacent to the port, don't use this class.
+  // Replace MappingLink with a go.Link in the "Mapping" link template.
+  class MappingLink extends go.Link {
+    getLinkPoint(node, port, spot, from, ortho, othernode, otherport) {
+      if (ROUTINGSTYLE !== "ToGroup") {
+        return super.getLinkPoint(node, port, spot, from, ortho, othernode, otherport);
+      } else {
+        var r = port.getDocumentBounds();
+        var group = node.containingGroup;
+        var b = (group !== null) ? group.actualBounds : node.actualBounds;
+        var op = othernode.getDocumentPoint(go.Spot.Center);
+        var x = (op.x > r.centerX) ? b.right : b.left;
+        return new go.Point(x, r.centerY);
+      }
+    }
+
+    computePoints() {
+      var result = super.computePoints();
+      if (result && ROUTINGSTYLE === "ToNode") {
+        var fn = this.fromNode;
+        var tn = this.toNode;
+        if (fn && tn) {
+          var fg = fn.containingGroup;
+          var fb = fg ? fg.actualBounds : fn.actualBounds;
+          var fpt = this.getPoint(0);
+          var tg = tn.containingGroup;
+          var tb = tg ? tg.actualBounds : tn.actualBounds;
+          var tpt = this.getPoint(this.pointsCount-1);
+          this.setPoint(1, new go.Point((fpt.x < tpt.x) ? fb.right : fb.left, fpt.y));
+          this.setPoint(this.pointsCount-2, new go.Point((fpt.x < tpt.x) ? tb.left : tb.right, tpt.y));
+        }
+      }
+      return result;
+    }
+  }
+  // end MappingLink
+
+
+    function init() {
+
+      // Since 2.2 you can also author concise templates with method chaining instead of GraphObject.make
+      // For details, see https://gojs.net/latest/intro/buildingObjects.html
+      const $ = go.GraphObject.make;  // for conciseness in defining templates
+
+      function handleTreeCollapseExpand(e) {
+        e.subject.each(n => {
+          n.findExternalTreeLinksConnected().each(l => l.invalidateRoute());
+        });
+      }
+
+      myDiagram =
+        new go.Diagram("myDiagramDiv",
+          {
+            "commandHandler.copiesTree": true,
+            "commandHandler.deletesTree": true,
+            "TreeCollapsed": handleTreeCollapseExpand,
+            "TreeExpanded": handleTreeCollapseExpand,
+            // newly drawn links always map a node in one tree to a node in another tree
+            "linkingTool.archetypeLinkData": { category: "Mapping" },
+            "undoManager.isEnabled": true,
+            "ModelChanged": e => {
+              if (e.isTransactionFinished) {  // show the model data in the page's TextArea
+                document.getElementById("mySavedModel").textContent = e.model.toJson();
+              }
+            }
+          });
+
+      // Each node in a tree is defined using the default nodeTemplate.
+      myDiagram.nodeTemplate =
+        $(TreeNode,
+          { movable: false, copyable: false, deletable: false },  // user cannot move an individual node
+          // no Adornment: instead change panel background color by binding to Node.isSelected
+          {
+            selectionAdorned: false,
+            background: "white",
+            mouseEnter: (e, node) => node.background = "aquamarine",
+            mouseLeave: (e, node) => node.background = node.isSelected ? "skyblue" : "white"
+          },
+          new go.Binding("background", "isSelected", s => s ? "skyblue" : "white").ofObject(),
+          // whether the user can start drawing a link from or to this node depends on which group it's in
+          new go.Binding("fromLinkable", "group", k => true),
+          new go.Binding("toLinkable", "group", k => true),
+          $(go.Panel, "Horizontal",
+            { position: new go.Point(0, 0) },
+            $(go.TextBlock,
+              new go.Binding("text", "key", s => "item5 " + s))
+          )  // end Horizontal Panel
+        );  // end Node
+
+      // These are the links connecting tree nodes within each group.
+
+      myDiagram.linkTemplate =  // with lines
+        $(go.Link,
+        {
+            selectionAdorned: true,
+            layerName: "Background",
+            reshapable: true,
+            routing: go.Link.AvoidsNodes,
+            corner: 5,
+            curve: go.Link.JumpOver,
+            isShadowed: true,
+            shadowOffset: new go.Point(2, 2),
+            shadowColor: "#919cab"
+          },
+          $(go.Shape,
+          { stroke: "#f7f9fc", strokeWidth: 4 }));
+
+      // These are the blue links connecting a tree node on the left side with one on the right side.
+      myDiagram.linkTemplateMap.add("Mapping",
+        $(MappingLink,
+        {
+            selectionAdorned: true,
+            layerName: "Background",
+            reshapable: true,
+            routing: go.Link.AvoidsNodes,
+            corner: 5,
+            curve: go.Link.JumpOver,
+            isShadowed: true,
+            shadowOffset: new go.Point(2, 2),
+            shadowColor: "#919cab"
+          },
+          { isTreeLink: false, isLayoutPositioned: false, layerName: "Foreground" },
+          { relinkableFrom: true, relinkableTo: true },
+          $(go.Shape, { stroke: "black", strokeWidth: 2 })
+        ));
+
+      myDiagram.groupTemplate =
+        $(go.Group, "Auto",
+          { deletable: false, layout: makeGroupLayout() },
+          new go.Binding("position", "xy", go.Point.parse).makeTwoWay(go.Point.stringify),
+          new go.Binding("layout", "width", makeGroupLayout),
+          $(go.Shape, { fill: "white", stroke: "lightgray" }),
+          $(go.Panel, "Vertical",
+            { defaultAlignment: go.Spot.Left },
+            $(go.TextBlock,
+              { font: "bold 12pt sans-serif", margin: new go.Margin(5, 5, 0, 5) },
+              new go.Binding("text")),
+            $(go.Placeholder, { padding: 5 })
+          )
+        );
+
+      function makeGroupLayout() {
+        return $(go.TreeLayout,  // taken from samples/treeView.html
+          {
+            alignment: go.TreeLayout.AlignmentStart,
+            angle: 0,
+            compaction: go.TreeLayout.CompactionNone,
+            layerSpacing: 16,
+            layerSpacingParentOverlap: 1,
+            nodeIndentPastParent: 1.0,
+            nodeSpacing: 0,
+            setsPortSpot: false,
+            setsChildPortSpot: false,
+            // after the tree layout, change the width of each node so that all
+            // of the nodes have widths such that the collection has a given width
+            commitNodes: function() {  // method override must be function, not =>
+              go.TreeLayout.prototype.commitNodes.call(this);
+            }
+          });
+      }
+
+      // Create some random trees in each group
+      var nodeDataArray = [
+        { isGroup: true, key: -1, text: "Left Side", xy: "0 0", width: 150 },
+        { isGroup: true, key: -2, text: "Right Side", xy: "200 0", width: 150 },
+        { isGroup: true, key: -3, text: "Other Side", xy: "400 0", width: 150 },
+        { isGroup: true, key: 1587, text: "", xy: "210 0", width: 10 }
+      ];
+      var linkDataArray = [
+        { from: 6, to: 1012, category: "Mapping" },
+        { from: 4, to: 1006, category: "Mapping" },
+        { from: 9, to: 1004, category: "Mapping" },
+        { from: 1, to: 1009, category: "Mapping" },
+        { from: 14, to: 1010, category: "Mapping" }
+      ];
+
+      // initialize tree on left side
+      var root = { key: 0, group: -1 };
+      nodeDataArray.push(root);
+      for (var i = 0; i < 11;) {
+        i = makeTree(3, i, 17, nodeDataArray, linkDataArray, root, -1, root.key);
+      }
+
+      // initialize tree on right side
+      root = { key: 1000, group: -2 };
+      nodeDataArray.push(root);
+      for (var i = 0; i < 15;) {
+        i = makeTree(3, i, 15, nodeDataArray, linkDataArray, root, -2, root.key);
+      }
+
+      root = { key: 2000, group: -3 };
+      nodeDataArray.push(root);
+      for (var i = 0; i < 15;) {
+        i = makeTree(3, i, 15, nodeDataArray, linkDataArray, root, -3, root.key);
+      }
+
+      myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
+    }
+
+    // help create a random tree structure
+    function makeTree(level, count, max, nodeDataArray, linkDataArray, parentdata, groupkey, rootkey) {
+      var numchildren = Math.floor(Math.random() * 10);
+      for (var i = 0; i < numchildren; i++) {
+        if (count >= max) return count;
+        count++;
+        var childdata = { key: rootkey + count, group: groupkey };
+        nodeDataArray.push(childdata);
+        //linkDataArray.push({ from: parentdata.key, to: childdata.key });
+        if (level > 0 && Math.random() > 1) {
+          count = makeTree(level - 1, count, max, nodeDataArray, linkDataArray, childdata, groupkey, rootkey);
+        }
+      }
+      return count;
+    }
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+
+
+  <div id="myDiagramDiv" style="background-color: white; border: 1px solid black; width: 100%; height: 700px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0);"><canvas tabindex="0" width="995" height="698" style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; touch-action: none; width: 995px; height: 698px;"></canvas><div style="position: absolute; overflow: auto; width: 995px; height: 698px; z-index: 1;"><div style="position: absolute; width: 1px; height: 1px;"></div></div></div>
+  <button id="darkMode" onclick="buttonClick()">Dark Mode</button>
+  </pre></div>
+  </body>
+  </html>
