@@ -1,0 +1,34 @@
+\section{Partial n-ary candidate generation}
+The upcoming algorithm will support n-ary (p)IND discovery, instead of only unary (p)IND discovery like \textit{(p)SPIDER} does. We there need to discuss how n-ary candidates can be efficiently generated in a partial setting. 
+
+\noindent \newline Given two relational instances $r_1$ and $r_2$ and attributes $X, Y \in r_1$, $Z, W \in r_2$, we call the pIND candidates $r_1[X,Y] \subseteq_\rho r_2[Z,W]$ and $r_1[Y,X] \subseteq_\rho r_2[W,Z]$ equal since each is only valid if and only if the other is valid. More generally, given a permutation $\omega$ and two attribute lists $X = X_1, X_2, \dots X_n$ and $Y = Y_1, Y_2, \dots Y_n$, the candidate $r_1[X] \subseteq_\rho r_2[Y]$ is equal if and only if all permutations are valid. Since the included values are always equal, apart from ordering, we find that that for any $v$ included in $r_1[X]$ and $r_2[Y]$ there is a permutation of that value $\omega(v)$ which must be present in $r_1[\omega(X)]$ and $r_2[\omega(Y)]$. This concludes that a permutation of a candidate will not provide further insights and that testing all permutations is a waste of computational resources. We will therefore only consider such candidates where the contained columns of the dependant side are strictly increasing. This definition fixes a strict permutation for each candidate. Further all mentioned results with a number of pINDs are always counted by disregarding the semantically equal permutations.
+
+\noindent \newline To create candidates for u-nary pIND discovery, we initially assume every attribute referrers every other attribute, excluding itself. Self-referral is excluded since we already showed, that this forms trivially valid INDs without meaning (Theorem \ref{theo:pInd}). During the validation process we prune the candidates which in the end results in only the valid candidate remaining.
+
+\noindent \newline A known strategy for creating n-ary IND candidates is using the already found candidates of the (n-1) layer in combination with the u-ary INDs \cite{papenbrock2015divide}. This strategy can be applied in the exact same way for pIND candidate creation, since it relies on transitivity which we should is also true in a partial setting. The proposed strategy includes the following condition, which each new candidate needs to respect.
+
+\noindent \newline Given two relational instances $r_1$ and $r_2$ with valid (n-1)-ary attributes $X \in r_1$ and $Y \in r_2$ and valid u-nary attributes $A \in X$ and $B \in Y$, a n-ary candidate can be formed if
+\begin{itemize}
+    \item[1)] The column index of $A$ is greater than the column index of all $X_i \in X$.
+    \item[2)] $B$ is not contained in $Y$.
+    \item[3)] If $r_1 = r_2$, then $X$, $A$, $Y$ and $B$ need to be pairwise disjoint.
+\end{itemize}
+Originally, $B$ was also required to be non-empty, which makes sense when treating null as a subset. In that setting an all-null attribute will create a valid n-ary candidate with all (n-1)-ary pINDs and is therefore trivial. The proposed algorithm however offer different null interpretations under which all-empty columns might become relevant. This is why we will not require $B$ to be non-empty.
+
+\noindent \newline We will further apply another step to the candidate generation which improves the original method by pruning candidates that are not possible during the generation without the need of the actual relation instances. We have showed that transitivity requires all subsets of a candidate to be valid for that candidate to be valid (Section \ref{theo:pInd}). In the original generation, this is only applied in a weak setting by ensuring $r_1[X] \subseteq_\rho r_2[Y]$ and $r_1[A] \subseteq_\rho r_2[B]$. Assume $|X| = 3$, we know that if $r_1[X_1, A] \subseteq_\rho r_2[Y_1, B]$ or $r_1[X_2, A] \subseteq_\rho r_2[Y_2, B]$ are not present in the current layer, then $r_1[X_1, X_2, A] \subseteq_\rho r_2[Y_1, Y_2, B]$ can not be valid. Therefor the proposed expansion is to ensure the subsets of the generated candidates are also valid.
+\begin{algorithm}
+    \caption{Adjusted candidate generation}\label{alg:canditate_gen}
+    \hspace*{\algorithmicindent} \textbf{Input:} $r_1, X, A, r_2, Y, B$
+    \begin{algorithmic}[1]
+    \For{$skipIndex$ in $1, \dots, |X|$}
+        \State $dependant = r_1[(X \setminus X_{skipIndex}), A]$
+        \State $referred = r_2[(Y \setminus Y_{skipIndex}), B]$ \\
+        \If{\textbf{not} $dependant \subseteq_\rho referred$}
+            \State \Return False
+        \EndIf
+    \EndFor
+    \State \Return True
+    \end{algorithmic}
+\end{algorithm}
+
+\noindent We can conclude that this only reduces the generated candidates if $|X| \geq 2$, meaning we generate candidates for the third or higher layer. The check in line 5 can be done very efficiently in $O(1)$ time without any memory overhead since we have the results of the current and the u-nary layer in main memory for the candidate generation anyway.

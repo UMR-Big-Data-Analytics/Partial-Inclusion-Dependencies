@@ -1,0 +1,39 @@
+% TODOs:
+% properly include citations
+\subsection{Null handling}
+Relational databases can include \textit{NULL} or \textit{EMPTY} values.
+The allowance of such values can originate from my different sources like historic expansions of a database, missing or lost data, unknown values or entries which simply can not be filled with any concrete value. For the treatment of these values there are two main interpretations. %cite https://dl.acm.org/doi/pdf/10.1145/582095.582123  
+Entries which are undefined and not relevant, and entires which are missing even tho they are relevant.Using these interpretations we will now define and discuss different approaches on how \textit{NULL} entries are treated. None of the approaches is less valid than another, but one needs to choose a treatment.
+
+\subsubsection*{The \textbf{unknown} interpretation}
+In this interpretation the truth value of $x = y$ where $x$ or $y$ or both are \textit{NULL} is considered as unknown \cite{codd1979extending}.
+It is not true or false, but rather lies under the assumption that the \textit{NULL} entry could be filled using some,
+possibly distinct value. This interpretation of \textit{NULL} entries causes inclusion or equality operations to also
+return neither true or false, but also an \textit{unknown} truth statement.
+Our search for pINDs expects a static data input and would need to be re-run in the event of new or updated entries.
+Therefor the \textit{unknown} interpretation does not provide us with usable inforation. We would rather have the
+expert user decide between one of the following interpretations.
+
+\subsubsection*{The \textbf{subset} interpretation}
+This interpretation is similar to an interpretation known as \textit{more informative tuples} \cite{zaniolo1982database}.
+A \textit{more informative tuple} relation is a relation between two tuples $t_1$ and $t_2$ with attributes $A$ and $B$
+where for every $a \in A$ where $t_1[a] \not = NULL$, $a \in B$ and $t_1[a] = t_2[a]$ are valid. Under this notation,
+$t_2$ carries the entire inforation of $t_1$, but potentially contains more inforation for the $NULL$ entries of $t_1$.
+
+For pIND discovery we now consider a \textit{subset} interpretation. Given two relational instances $r_1$ and $r_2$ with attribute sets
+$X \in r_1$ and $Y \in r_2$ where $|X| = |Y|$. We define $r_1[X] \subseteq_\rho r_2[Y]$ as valid if there are at least $\lfloor |r_1[X]| \cdot \rho \rfloor$
+tuples in $r_1[X]$ for which a \textit{more informative tuple} exists in $r_2[Y]$.
+
+\subsubsection*{The \textbf{foreign} interpretation}
+A slight variation of the \textit{subset} interpretation. The difference being the added constraint that the referenced side is not allowed to
+carry \textit{NULL} values. The motivation for this interpretation is the detection of foreign keys.
+% TODO: Write how this only is a difference in the unary discovery, since the n-ary generation will automatically catch this constraint
+
+\subsubsection*{The \textbf{equality} interpretation}
+This interpretation could be considered a somewhat optimistic version of the \textit{unknown} interpretation in a sense that we consider all $NULL$ entries as being equal. The result is equal to the subset approach, if we consider $NULL$ as just another explicit value. Logically this interpretation should be chosen if $NULL$ implicitly defines an value which can not be expressed explicitly (e.g. infinity in a numeric column), but still holds meaning and is expected in the referenced for a valid pIND.
+
+\subsubsection*{The \textbf{inequality} interpretation}
+The pessimistic version of the \textit{unknown} interpretation. Here we consider every $NULL$ entry as an distinct value. Therefor the comparison between two entries $x$ and $y$ where one or both are $NULL$ always yields false. We are in a setting where $NULL$ entires are considered not yet filled and we choose a worst case scenario where the replacement values are all distinct form each other and the relation itself. In a non-partial setting this would restrict an attribute with at least one $NULL$ entry from forming any INDs. Applying a partial setting, there is still a chance, that attributes with only a few $NULL$ entries are able to form pINDs. This interpretation is equal to the certain world concept. No matter how the $NULL$ values would be set, the found pINDs will stay valid.
+
+\subsubsection*{Possible World}
+In a possible world, all pINDs that could become valid under some $NULL$ replacement, are considered valid. This creates a whole new complexity layer when trying to choose the optimal $NULL$ replacements. If a referenced attribute has $n$ $NULL$ entries, we could avoid $n$ violations. If we do not care about deduplicates, this is easy to implementation, since we can increase the possible violations of a candidate by the number of $NULL$ in the referenced attribute. Should be care about deduplicates, this situation becomes more difficult. The optimal way of replacing $NULL$ would be to pick the $n$ values in the dependant attribute with the most occurrences which do not appear in the referenced. That way we avoid the highest number of violations. For this to work, we would need to keep track of the top $n$ highest occurring values, which create a violation. Since $n$ might be very big, we might not be able to store a priority queue or something similar in main memory, and would there for need to store these values on disk. The described problems are certainly solvable, but are out of scope for the thesis. For this reason, the algorithms do not offer pIND discovery in a possible world setting.
