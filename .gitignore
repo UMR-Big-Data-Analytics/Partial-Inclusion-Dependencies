@@ -46,5 +46,6 @@ replay_pid*
 *.synctex.gz
 
 # data folder
-data/*[!.md]
-!data/*.md
+data/TPC-H/TPC-H V3.0.1/*
+
+thesis.pdf
