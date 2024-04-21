@@ -47,5 +47,5 @@ replay_pid*
 
 # data folder
 data/TPC-H/TPC-H V3.0.1/*
-
+data/**/*.json
 thesis.pdf
