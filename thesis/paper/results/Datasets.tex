@@ -1,10 +1,48 @@
 \section{Datasets}
-To understand the performance of the proposed algorithms it is crucial to perform testing on a variety of data sets. For this purpose we will gather some real word data sets. Further we will create synthetic data sets that aim on edge cases to see if the performance is strongly dependent on structural assumptions.
+There are many sources for csv or tsv files online spanning a range of domains. We aim to test the proposed algorithm on a collection of datasets which vary in size and the domain. Table \ref{tab:datasets} holds information regarding the characteristics of each dataset. The given numbers on INDs have be calculated by treating \textit{NULL} as subset (see Section \ref{sec:null_subset}).
 
-\subsection{Real World Data Sets}
-There are many sources for csv or tsv files online. I have decided to gather data from the US Government\footnote{\href{https://data.gov}{data.gov}}, the European Union \footnote{\href{https://data.europe.eu}{data.europe.eu}}, Kaggle, \footnote{\href{https://kaggle.com}{Kaggle.com}}, Musicbrainz \footnote{\href{https://musicbrainz.org/}{musicbrainz.org}}, Eurostat \footnote{https://ec.europa.eu/} 
+\begin{table*}[t]
+    \centering
+    \begin{tabular}{llrrrrrr}
+        \hline
+        \textbf{Name} & \textbf{Domain} & \textbf{Size on Disk} & \textbf{Relations} & \textbf{Attributes} & \textbf{Unaries} & \textbf{N-aries} & $\textbf{n}_\textbf{max}$ \\
+        \hline
+        Cars & Retail & 6.1 MB & 13 & 117 & 281 & 91 & 4 \\
+        ACNH & Video-Games & 3.5 MB & 30 & 630 & 8,686 & 20,908,814 & 12 \\
+        T2D & Benchmark & 4 MB & 669 & 3125 & 362,604 & 9,301,847 & 7 \\
+        WebTables & Various & ? & ? & ? & ? & - & 1 \\
+        US & Governmental & 1.2 GB & 16 & 255 & 753 & 215,308 & 7 \\
+        EU & Governmental & 1.8 GB & 37 & 624 & 18,752 & 54,634 & 6 \\
+        Population & Demographics & 1.7 GB & 1 & 109 & 236 & 1 & 2 \\
+        Musicbrainz & Entertainment & 16.7 GB & 171 & 301 & 1,843 &  ? & ? \\
+        UniProt & Biology & 633 MB & 263 & 2367 & 420,412 & 1,174,863 & 5 \\
+        Tesma & Synthetic & 80 MB & 2 & 12 & 4 & 1 & 2 \\
+        TPC-H 1 & Synthetic & 1 GB & 7 & 61 & 96 & 8 & 2 \\
+        TPC-H 10 & Synthetic & ? & 7 & 61 & ? & ? & ? \\
+        \hline
+    \end{tabular}
+    \caption{Datasets and their characteristics}
+    \label{tab:datasets}
+\end{table*}
+\textbf{Cars} is a small dataset regarding used cars and their retail prices. The different relations each focus on a single brand (e.g. Audi, Ford or Skoda). Each row of a relation contains information on a specific model of that brand.
 
-% TODO: MORE
+The smallest dataset by required disk size, \textbf{ACNH}, contains data form the video game Animal Crossing: New Horizons\footnote{\url{https://animalcrossing.nintendo.com/new-horizons/}}. This dataset contains information on all items, recipes and achievements in the game. It was selected size it contains a vast amount of deep (p)INDs a poses the challenge of efficient candidate handling.
+
+\textbf{T2D} is a gold standard for matching web tables to DBpedia\footnote{\url{https://www.dbpedia.org/}}. We use a subset of the 779 provided web table that span various domains. The subset includes all tables with at least five rows.
+
+Similar to \textbf{T2D}, \textbf{WebTables} offers an even larger collection. WebDataCommons published a random sample of their Web Table Corpus\footnote{\url{https://webdatacommons.org/webtables/2015/downloadInstructions.html}}. We will use that Sample to evaluate the capabilities when a massive amount of relations and attributes are present. We will not try to compute n-ary pINDs for this dataset.
+
+The \textbf{US} government and the European union (\textbf{EU}) both publicly share regional, national and international data. The two dataset that are build on these sources represent the governmental domain.
+
+\textbf{Population} is a wide table containing world wide demographic data. It includes the population sizes for different ages in various countries from 1950, including predictions, up to 2025.
+
+\textbf{Musicbrainz} is a repository of music knowledge. The dataset in relational form has a large number of attributes, relations and rows. It is the most computational complex of the chosen datasets.
+
+The biological domin is covered by \textbf{UniProt}. This dataset contains vertebrate genomes aquired form Ensembl \footnote{\url{https://www.ensembl.org/index.html}} in the UniProt\footnote{\url{https://www.uniprot.org/}} standard.
+
+Lastly, we have the synthetic datasets \textbf{Tesma} and \textbf{TPC-H}. \textbf{Tesma} is a database generation tool developed by the Hasso Plattner Institut. Using a config file which relational constraints and the wanted size, it will create multiple csv files with the wanted structure. \textbf{TPC-H} is a benchmark for database performance. Using the generation tool, we have created a 1 GB version (\textbf{TPC-H 1}) and a 10 GB version (\textbf{TPC-H 10})
+
+To enable reproducibility, the connected GitHub repository contains a detailed technical documentation on how each dataset was acquired\footnote{\url{https://github.com/Jakob-L-M/partial-inclusion-dependencies/tree/main/data}}.
 
 \subsection{Synthetic Data Sets}
 To evaluate the proposed algorithms under detailed aspects, we will generate synthetic data sets. The strategies and claims are based on \cite{jordon2022synthetic} synthetic data can be defined as \textit{data that has been generated using a purpose-built mathematical model or algorithm, with the aim of solving a (set of) data science task(s).} While we will not try to train a model with the synthetic data, it is still of great use for us, since we have absolute knowledge about the underlying structures. The decision is based on the fact that there is a lot of real word data available, since open data is a growing market which expected to grow even further \cite{EUopenData}. Synthetic data on the other hand enables us to evaluate the algorithm performances on edge cases, which we may not be able to find in the selection of real world data sets.
