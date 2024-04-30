@@ -8,15 +8,16 @@ Using the command `dbgen -vf -s <SIZE>` an instance of TPC-H of size `<SIZE>`GB 
 As a last step, we use `remove_tail_seperator.py` to remove the tailing seperator which is present in the file.
 
 ## Usage within project
-I use a 1GB and a 5GB version of TPC-H for performance measurements.
+I use a 1 GB and a 10 GB version of TPC-H for performance measurements.
 
 ## Config for TPC-H
 ```java
-case TPCH_1:
+case TPCH_1 -> {
     this.databaseName = "TPCH_<SIZE>";
     this.tableNames = new String[]{"customer", "lineitem", "nation", "orders", "part", "partsupp", "region" "supplier"};
     this.inputFileSeparator = '|';
     this.inputFileHasHeader = false;
     this.inputFileEnding = ".tbl";
+}
 ```
 The `<SIZE>` varibale should be equal to the generated size.
