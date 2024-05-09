@@ -24,6 +24,7 @@
 \usepackage[noend,linesnumbered]{algorithm2e}
 \SetKwInput{KwInput}{Input}
 \SetKwInput{KwOutput}{Output}
+\SetKwIF{If}{ElseIf}{Else}{if}{}{else if}{else}{end if}
 
 \begin{document}
 \title{Partial Inclusion Dependency Discovery}
@@ -63,7 +64,8 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-In a world where data grows exponentially and data sharing becomes more common, the need for efficient and flexible data profiling increases constantly. Past research dealing with inclusion dependencies (INDs) mostly overlooked the potential of partial INDs, meaning imperfect subsets. Such partial INDs can enable researchers and data engineers to understand databases, even if different sources do not match perfectly. Combining know strategies such as a sort-merge join and heavy parallelization we will introduce the algorithm \textit{Spind}. \textit{Spind} is not only able to find all partial INDs, it also outperforms the current state-of-the-art algorithm \textit{BINDER} in both unary and n-ary setting by multiple magnitudes.
+In a world where data grows exponentially and data sharing becomes more common, the need for efficient and flexible data profiling increases constantly.  Identifying inclusion dependencies (INDs) among attributes is crucial for tasks like data integration, query optimization, and integrity checking. One significant challenge lies in detecting these relationships, particularly with the increasing size of datasets, which escalates the complexity of IND discovery. \\
+Past research dealing with INDs mostly overlooked the potential of partial INDs (pINDs), meaning imperfect subsets. Such partial INDs can enable researchers and data engineers to understand databases, even if different sources do not match perfectly. After introducing pIND properties and discussing new strategies for (p)IND discovery, combining know strategies such as a sort-merge join and heavy parallelization, we will introduce \textit{SPIND}. An algorithm that is not only able to find all pINDs, it also outperforms the current state-of-the-art algorithm \textit{BINDER} in both unary and n-ary setting by multiple magnitudes.
 \end{abstract}
 
 \maketitle
@@ -101,13 +103,15 @@ The source code, data, and/or other artifacts have been made available at \url{\
 
 \input{foundations/dealing_with_null}
 
+\input{pINDs/partial_IND_algorithms}
+
 \input{pINDs/spind}
 
 \input{pINDs/candidate_generation}
 
 \input{pINDs/hyperparameters}
 
-\input{results/Datasets}
+\input{results/evaluation}
 
 \input{foundations/related_work}
 

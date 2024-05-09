@@ -1,4 +1,4 @@
-\section{Datasets}
+\subsection{Datasets}
 There are many sources for csv or tsv files online spanning a range of domains. We aim to test the proposed algorithm on a collection of datasets which vary in size and the domain. Table \ref{tab:datasets} holds information regarding the characteristics of each dataset. The given numbers on INDs have be calculated by treating \textit{NULL} as subset (see Section \ref{sec:null_subset}).
 
 \begin{table*}[t]
@@ -9,19 +9,19 @@ There are many sources for csv or tsv files online spanning a range of domains. 
         \hline
         Cars & Retail & 6.1 MB & 13 & 117 & 281 & 91 & 4 \\
         ACNH & Video-Games & 3.5 MB & 30 & 630 & 8,686 & 20,908,814 & 12 \\
-        T2D & Benchmark & 4 MB & 669 & 3125 & 362,604 & 9,301,847 & 7 \\
-        WebTables & Various & ? & ? & ? & ? & - & 1 \\
+        T2D & Benchmark & 4 MB & 669 & 3125 & 362,604 & 9,301,847 & 8 \\
+        WebTables & Various & 5.3 MB & 5,000 & 18,663 & 19,924,741 & - & 1$^\dag$ \\
         US & Governmental & 1.2 GB & 16 & 255 & 753 & 215,308 & 7 \\
         EU & Governmental & 1.8 GB & 37 & 624 & 18,752 & 54,634 & 6 \\
         Population & Demographics & 1.7 GB & 1 & 109 & 236 & 1 & 2 \\
-        Musicbrainz & Entertainment & 16.7 GB & 171 & 301 & 1,843 &  ? & ? \\
+        Musicbrainz & Entertainment & 16.7 GB & 171 & 301 & 1,843 &  ? & 4$\dag$ \\
         UniProt & Biology & 633 MB & 263 & 2367 & 420,412 & 1,174,863 & 5 \\
         Tesma & Synthetic & 80 MB & 2 & 12 & 4 & 1 & 2 \\
         TPC-H 1 & Synthetic & 1 GB & 7 & 61 & 96 & 8 & 2 \\
-        TPC-H 10 & Synthetic & ? & 7 & 61 & ? & ? & ? \\
+        TPC-H 10 & Synthetic & 10.5 GB & 7 & 61 & 97 & 11 & 3 \\
         \hline
     \end{tabular}
-    \caption{Datasets and their characteristics}
+    \caption{Datasets and their characteristics. Max n-ary layers marked with $^\dag$ are user defined limits.}
     \label{tab:datasets}
 \end{table*}
 \textbf{Cars} is a small dataset regarding used cars and their retail prices. The different relations each focus on a single brand (e.g. Audi, Ford or Skoda). Each row of a relation contains information on a specific model of that brand.
@@ -44,6 +44,61 @@ Lastly, we have the synthetic datasets \textbf{Tesma} and \textbf{TPC-H}. \textb
 
 To enable reproducibility, the connected GitHub repository contains a detailed technical documentation on how each dataset was acquired\footnote{\url{https://github.com/Jakob-L-M/partial-inclusion-dependencies/tree/main/data}}.
 
-\subsection{Synthetic Data Sets}
-To evaluate the proposed algorithms under detailed aspects, we will generate synthetic data sets. The strategies and claims are based on \cite{jordon2022synthetic} synthetic data can be defined as \textit{data that has been generated using a purpose-built mathematical model or algorithm, with the aim of solving a (set of) data science task(s).} While we will not try to train a model with the synthetic data, it is still of great use for us, since we have absolute knowledge about the underlying structures. The decision is based on the fact that there is a lot of real word data available, since open data is a growing market which expected to grow even further \cite{EUopenData}. Synthetic data on the other hand enables us to evaluate the algorithm performances on edge cases, which we may not be able to find in the selection of real world data sets.
+\subsection{Algorithm Runtimes} Table \ref{tab:runtimes} holds information regarding the total execution time of all datasets for the discussed algorithms for both unary and n-ary IND discovery. All runs have been executed on the same machine, which is equiped with an AMD Ryzen 5 3600X, 32GB of DDR4 RAM and dual Samsung 950 EVO SSDs. Each algorithm was limited to a maximal consumtion of 20 GB RAM. We conduct IND discovery to understand the execution times of the partial variants (\textit{pSPIDER}, \textit{pBINDER}, \textit{SPIND}) in comparison to known references (\textit{SPIDER}, \textit{BINDER}). \\
+The out of memory exception encountered for the \textit{WebTables} dataset is caused by \textit{SPIDER} using HashMaps to store candidates. This is far more memory intensive than single linked lists.
+When discovering n-ary INDs, \textit{BINDER} did not finish the \textit{ACNH} and \textit{T2D} datasets. For \textit{ACNH} \textit{BINDER} was not able to finish the four layer within four hours and for \textit{T2D} the sixs layer could not be completed. The the case of \textit{ACNH} we can conclude that \textit{BINDER} was unable to complete $\sim 18\%$ of the total candidates, when estimating the total runtime using the growth of the attribute space in the deeper layers we would expect \textit{BINDER} to take at least 24 hours, but most likely far longer due to poorer candidate generation. Using the same approximation, \textit{T2D} would take also take over 24 hours. Additionally the variants create millions of files, causing the execution to be very impractical. \\
+
+% Other errors
+
+We discovering unary INDs, we find \textit{pSPIDER} to present superior execution times. The parallelization and more efficient structures enables the algorithm to beat the original version by a factor of up to 14x (\textit{UniProt}). \textit{BINDER} and \textit{pBINDER} are able to narrow this factor, especially on larger datasets, but are still unable to beat \textit{pSPIDER} in any dataset. \textit{SPIND} is structurally very similar to \textit{pSPIDER} when discovering unary INDs. Contrary to \textit{SPIND}, merging and validation are not performed at the same time, which causes \textit{SPIND} to take slightly longer while still outperforming the \textit{BINDER} variants.
+
+
+\begin{table}[]
+    \centering
+    \resizebox{.475\textwidth}{!}{
+        \begin{tabular}{lrrrrrr}
+        \hline
+        \textbf{Unary} & \textbf{\footnotesize SPIDER} & 
+        \textbf{\footnotesize pSPIDER} &
+        \textbf{\footnotesize BINDER} & 
+        \textbf{\footnotesize pBINDER} &  
+        \textbf{\footnotesize SPIND} \\
+        \hline
+        Cars & 1.1s & 0.5s & 1.3s & 0.0 & 0.0 \\
+        ACNH & 1.3s & 0.6s & 2.3s & 0.0 & 0.0 \\
+        T2D & 4.6s & 1.5s & 9.3s & 0.0 & 0.0 \\
+        WebTables & \textit{OOM} & 15.6s & 1m 46s & 0.0 & 0.0 \\
+        US & 1m 58s & 14.0s & 49.4s & 0.0 & 0.0 \\
+        EU & 2m 5s & 21.3s & 49.8s & 0.0 & 0.0 \\
+        Population & 5m 36s & 34.4s & 2m 36s & 0.0 & 0.0 \\
+        Musicbrainz & 43m 20s & 10m 58s & 24m 2s & 24m 41s & 0.0 \\
+        UniProt & 1m 43s & 7.0s & 45.8 & 0.0 & 0.0 \\
+        Tesma & 8.9s & 1.8s & 3.8 & 0.0 & 0.0 \\
+        TPC-H 1 & 2m 14s & 24.9s & 55.1s & 53.4s & 0.0 \\
+        TPC-H 10 & 27m 29s & 4m 57s & 9m 19s & 0.0 & 0.0 \\
+        \hline
+        \hline
+        \textbf{N-ary} & \textbf{\footnotesize SPIDER} & 
+        \textbf{\footnotesize pSPIDER} &
+        \textbf{\footnotesize BINDER} & 
+        \textbf{\footnotesize pBINDER} &  
+        \textbf{\footnotesize SPIND} \\
+        \hline
+        Cars & - & - & 2.8s & 2.8s & 0.0 \\
+        ACNH & - & - & \textit{DNF} & 0.0 & 20m 35s \\
+        T2D & - & - & \textit{DNF} & 0.0 & 33.3s \\
+        US & - & - & 3h 26m & 25min 39s & 2m 13s \\
+        EU & - & - & 2m 44s & 2m 23s & 44.0s \\
+        Population & - & - & 2h 40m & 2h 42m & 0.0 \\
+        Musicbrainz & - & - & 2h 24m & 1h 14m & 2h 6m \\
+        UniProt & - & - & 0.0 & 0.0 & 0.0 \\
+        Tesma & - & - & 0.0 & 0.0 & 0.0 \\
+        TPC-H 1 & - & - & 0.0 & 0.0 & 4m 11s \\
+        TPC-H 10 & - & - & 0.0 & 0.0 & 47m 3s \\
+        \hline
+    \end{tabular}
+    }
+    \caption{Runtime evaluation over the different datasets in both unary (top) and n-ary (bottom) settings. \textit{OOM}: Out of Memory Exception, \textit{DNF}: Did not finish, \textit{NC}: Not comparable}
+    \label{tab:runtimes}
+\end{table}
 
