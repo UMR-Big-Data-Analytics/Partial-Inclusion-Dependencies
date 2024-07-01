@@ -1,3 +1,19 @@
-\section{Experimental Evaluation}
-To understand the practical performance of the proposed algorithms \textit{pSPIDER}, \textit{pBINDER} and \textit{SPIND} we use the known algorithms \textit{SPIDER} and \textit{BINDER} with their provided implementations. We will go over the datasets used and provide execution times for all datasets for the different algorithms. Afterwards we investigate the influence of the partiality factor $\rho$ and give a few real-world examples of pINDs.
+\section{Experimental Evaluation}\label{sec:eval}
+To understand the practical performance of the proposed algorithms \textit{pSPIDER}, \textit{pBINDER} and \textit{SPIND} we use the known algorithms \textit{SPIDER} and \textit{BINDER} with their existing implementations. We will review the data sets utilized (Section \ref{subsec:datasets}) and present the execution times for all data sets across the different algorithms (Section \ref{subsec:runtime}). We will also discuss the impact of hyperparameter choices (Section \ref{subsec:hyperparameters}), the probabilistic filter (Section \ref{subsec:filter_res}), and finally examine pINDs in real-world data (Section \ref{subsec:real_pINDs}).
+
 \input{results/Datasets}
+
+\subsection{Filter Evaluation} \label{subsec:filter_res}
+We would like to understand the effect of using a probabilistic filter. In Section \ref{subsec:prob_filter} we discuss two versions. A filter which is built once after unary discovery and a filter which is rebuild on every nary layer. In Figure \ref{fig:filter} we find the execution times of all datasets, expect \textbf{WebTables} since we only search for unarys in that case. The graphic shows the difference in runtime when using the bloom filter by constructing it once during unary discovery (\textit{Once}), using and refining the filter at every level (\textit{Refine}) and not using a probabilistic filter at all. Not using a filter builds the baseline execution time, while the other two modes are displayed with their relative runtime to that baseline.
+
+We find that the results vary substantially when viewing the different datasets. This observation supports the notion that we succeeded in finding a range of datasets which are structurally different from each other. Notably, \textit{TPC-H 1} and \textit{UniProt} performed better without a probabilistic filter. For \textit{UniProt} we find that the filter does decrease the execution time since the data set exclusively produces symmetrically INDs. For \textit{TPC-H 1}, we observe that the number of n-ary candidates is so limited that the time spent on construction exceeds the computational savings achieved. Employing either a filter build once or a refined filter yields nearly identical execution times, which are generally slightly quicker than not using a filter at all. Given that a refined filter can reduce some read and write operations, we opt for this version to reduce the disk workload.
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=.48\textwidth]{figures/filter_results.pdf}
+    \caption{Changes in execution time when using a (refined) probabilistic filter for nary IND discovery.}
+    \label{fig:filter}
+\end{figure}
+
+\subsection{Real World pINDs} \label{subsec:real_pINDs}
+Real-world datasets exhibit a considerable amount of pINDs, even when the identification threshold for such relationships is set to a high value (e.g., $\rho = 0.99$). Some of these pINDs are logical and significant, indicating underlying patterns or connections within the data. For example, date columns may not be perfectly contained within each other due to differences in update frequencies across data sets (found in the \textit{EU} data set). However, pINDs also occur purely by chance, without any substantial relevance. Consequently, human expertise is essential to evaluate whether a discovered pIND is truly useful, as automated detection alone cannot adequately distinguish between meaningful dependencies and coincidental ones.

@@ -1,70 +1,68 @@
-\section{Foundations of pINDs}
-This sections expands the notation introduced by De Marchi et al. \cite{marchi2009unary}. A relational instance $r$ of a relational schemata $R$ carries tuples of values, donated as $u$ or $v$. Using an attribute list taken from $R$, typically denoted as $X$ or $Y$, we can perform a projection on $r$, thereby selecting a subset of attributes. We notate it by $R[X]$. The same is possible for tuples $u$. Writing $u[X]$ references the selection of values in the tuple.
+\section{Foundations of pINDs}\label{sec:foundations}
+This section expands the notation introduced by De Marchi et al. \cite{marchi2009unary}. A relational instance $r$ of a relational schemata $R$ carries tuples of values, typically denoted as $u$ or $v$. Using an attribute list taken from $R$, typically denoted as $X$ or $Y$, we can perform a projection $r[X]$ on $r$, thereby selecting a subset of attributes. Similarly for tuples $u$, we write $u[X]$ referencing the selection of values in the tuple.
 
-Inclusion Dependencies (INDs) represent a fundamental concept, denoting formal relationships between attributes in a database schema. An IND specifies that the values within one set of attributes are inherently included within the values of another set of attributes.
+INDs represent a fundamental concept that denotes formal relationships between attributes in a database schema. An IND specifies that the values within one set of attributes are inherently included within the values of another set of attributes.
+\begin{definition}[Inclusion dependencies]\label{def:inds}
+    Given two relational instances $r_1$ from $R_1$ and $r_2$ from $R_2$. An IND is defined as $$r_1[X] \subseteq r_2[Y] \iff \forall \: u \in r_1[X], \exists \: v \in r_2[Y] : u[X] = v[Y].$$ This condition can only hold if the cardinality of $X$ is equal to the cardinality of $Y$. We further call the left hand side (here $r_1[X]$) the dependent attribute(s) and the right hand side the referenced attribute(s).
+\end{definition}
+The complexity of discovering INDs is one of the hardest problems in computer science. More precisely, the discovery of all INDs is \textit{W}[3]-hard, making it one of the hardest naturally occurring problems in computer science \cite{blasius2017parameterized}. 
 
-\begin{definition}[Inclusion Dependencies]\label{def:inds}
-    Given two relational instances $r_i$ from $R_i$ and $r_j$ from $R_j$. An IND is defined as $r_i[X] \subseteq r_j[Y] \iff \forall \: u \in r_i[X], \exists \: v \in r_j[Y] \text{ such that } u[X] = v[Y]$. This condition can only hold if the cardinality of $X$ is equal to the cardinality of $Y$. We further call the left hand side (here $r_i[X]$) the dependent attribute(s) and the right hand side the referenced attribute(s).
+% We can calculate potential IND candidates for each attribute cardinality, we will call the different cardinalities \textit{layers}. We will now calculate the worst case candidate space cardinality, for which we assume that all (p)IND candidates of the previous layers are valid. Let $X_i$ be all possible attribute lists for $r \in R$ of size $\alpha$, $m$ the number of total attributes, and $k$ the number of non-trivial candidates. For $\alpha \leq \lfloor \frac{n}{2} \rfloor$ we can evaluate
+%\[
+%    k = \underbrace{\binom{m}{\alpha}}_{\text{Left hand side combinations}} \cdot \underbrace{\binom{m-\alpha}{\alpha}\cdot \alpha!}_\text{Right hand side combinations},
+%\]
+%otherwise $k = 0$. We do not permute the left-hand side, since the resulting INDs would only yield redundant information.
+
+%In a multi-schema setting, this calculation becomes more difficult. We now need to consider which schema can form which inter-schema candidates while allowing intra-schema candidates. We define 
+%\begin{align*}
+%    q_r(\alpha, \tau) = \begin{cases}
+        % 0 & \text{if } \alpha > |r| \bigvee (\alpha > \lfloor\frac{|r|}{2}\rfloor \bigwedge \tau),\\
+        % \binom{|r|}{\alpha}\cdot \alpha! & \text{if not } \tau, \\
+        % \binom{|r| - \alpha}{\alpha}\cdot \alpha! & \text{if } \tau,
+%    \end{cases}
+%\end{align*}
+%which computes the candidates a single relational instance ($r$) can produce, given $\alpha$, the size of combinations and $\tau$ an indicator, whether the schema was already used for the other side.
+
+%Using this helper function we can calculate the number of possible candidates $k$ for a fixed $\alpha$ over relational instances $r_1, \dots, r_n$ from $R_1, \dots, R_n$ by computing:
+%$$
+%    k = \sum\limits_{i = 1}^n q_{r_i}(\alpha, \textit{false}) \cdot \sum\limits_{j = 1}^n q_{r_j}(\alpha, i == j).
+%$$
+
+
+\begin{definition}[Partial inclusion dependencies]\label{def:pinds}
+    A pIND is written as $r_1[X] \subseteq_{\rho} r_2[Y]$ where $\rho \in (0, 1]$ and the remaining notation is analogous to Definition \ref{def:inds}. Our notation refers to lists of tuples and takes the cardinality of duplicates into consideration. The pIND $r_1[X] \subseteq_{\rho} r_2[Y]$ is valid if
+    $$
+        \frac{|[u \in r_1[X] \: | \: \exists \; v \in r_2[Y] : u = v]|}
+            {|r_1[X]|} \geq \rho.
+    $$
+    If we do not consider duplicates, the condition simplifies
+    $$
+         \frac{|\{r_1[X]\} \cap \{r_2[Y]\}|}
+            {|\{r_1[X]\}|} \geq \rho.
+    $$
+     The possible values for $\rho$ do not include $0$, as this would mean that everything is a pIND of everything else, which is a trivial case.
 \end{definition}
 
-The complexity of discovering inclusion dependencies forms one of the hardest problems in computer science. More precisely, the discovery of all inclusion dependencies is W[3]-hard \cite{blasius2017parameterized}. This makes IND discovery one of the hardest problems in computer science. The number of possible candidates for each attribute size can be calculated. Notice that the formula below assumes that all IND of layers before where valid. In natural language, we search for the number of attribute combinations where each attribute is present at most once, allowing all permutations.
+As described in the definition of pINDs, a decision must be made regarding the treatment of duplicate values. Bauchmann et al. have already suggested two different versions \cite{bauckmann2006efficiently} which we will refer to as \textit{duplicateAware} and \textit{duplicateUnaware}.
+For the \textit{duplicateAware} version, the maximum number of violations that can occur for $r_1[X] \subseteq_{\rho} r_2[Y]$ to be valid is equal to $\lfloor (1-\rho) \cdot |r_1[X]| \rfloor$. A violation refers to a value found on the left-hand side but not on the right-hand side. We examine whether less than $\rho$ percent of the total (including duplicates and \textit{NULLs}) entries would need to be changed. When we discover a violation during the validation process, the total violations increase by the occurrences of the violation causing value. Once the violations surpass the maximum number of violations, we disregard the given candidate. In a \textit{duplicateUnaware} setting we care about the changes in unique values, while not regarding their number of occurrences. We ask the question: Do less than $\rho$ percent of the unique values need to be modified, such that the IND $r_1[X] \subseteq r_2[Y]$ becomes valid? In this setting, the maximum number of violations is equal to $\lfloor(1-\rho) \cdot |\{r_1[X]\}| \rfloor$. Observe the use of the set notation around the attribute, which indicates that we are counting the distinct values. \\
 
-\begin{definition}[Candidate Space]\label{def:candidates}
-    Let $\alpha$ be the fixed integer size of all possible $X_i$. Let $m$ be the number of attributes. Let $k$ be the number of possible candidates ($X_i \cap X_j = \emptyset$ where $i \not = j$ given $\alpha$).
-    \[
-        k = \underbrace{\binom{m}{\alpha}}_{\text{Left hand side combinations}} \cdot \underbrace{\binom{m-\alpha}{\alpha}\cdot \alpha!}_\text{Right hand side combinations}.
-    \]
-    This formula holds if $\alpha \leq \lfloor \frac{n}{2} \rfloor$ else $k$ is $0$. We do not permute the left-hand side, since the resulting INDs would only yield redundant information.
-\end{definition}
+\subsection{Properties of partial inclusion dependencies}\label{subsec:pIND_props}
+Typically strategies for IND discovery rely on properties found in Armstrong's axioms \cite{armstrong2002armstrong}. We now examine which properties remain valid in a partial context. 
 
-In a multi schema setting this calculation becomes more difficult. We now need to consider which schema can form which inter schema candidates while allowing intra schema candidates.
-\begin{definition}[Candidate Space (Multi-Schema)]\label{def:candidates-MS}
-    %TODO: rethink this!
-    We will first define a function $q_r(\alpha, \tau)$, which computes the candidates a single relation ($r$) can produce, given $\alpha$, the size of combinations and $\tau$ an indicator, whether or not the schema was already used for the other side.
+\subsubsection{\textbf{Reflexivity:}}
+For any $\rho \in (0, 1]$ the pIND $r_i[X_j] \subseteq_{\rho} r_i[X_j]$ is valid. Simplifying the left-hand side of Definition \ref{def:pinds} yields to condition
+$$
+    \rho \leq \frac{|r_i[X_j] \cap r_i[X_j]|}
+        {|r_i[X_j]|} = \frac{|r_i[X_j]|}
+        {|r_i[X_j]|} = 1.
+$$
+Since $\rho$ is upper bounded by $1$ the pIND will always be valid. Therefore pINDs also adhere to reflexivity.
 
-    \begin{align*}
-        q_r(\alpha, \tau) = \begin{cases}
-            0, & \text{if } \alpha > |r| \bigvee (\alpha > \lfloor\frac{|r|}{2}\rfloor \bigwedge \tau)\\
-            \binom{|r|}{\alpha}\cdot \alpha!, & \text{if not } \tau \\
-            \binom{|r| - \alpha}{\alpha}\cdot \alpha!, & \text{if } \tau
-        \end{cases}
-    \end{align*}
-    Using this helper function we can calculate the possible candidates $k$ for a fixed $\alpha$ over schema $r_1, \dots, r_n$ by computing:
-    $$
-        k = \sum\limits_{i = 1}^n q_{r_i}(\alpha, FALSE) \cdot \sum\limits_{i = 1}^n q_{r_i}(\alpha, TRUE).
-    $$
-\end{definition}
+\subsubsection{\textbf{Transitivity:}}
+Unlike INDs, pINDs generally do not adhere to transitivity. We will demonstrate this assertion through a proof-by-contradiction. Assume $r_1[X] = [1, 2, ..., 100]$, $r_2[Y] = [2, ..., 1000]$, and $r_3[Z] = [10, 11, ..., 1000]$. If transitivity would hold for any $\rho$, then we should find that for $\rho \in (0, 1]$ where $r_1[X] \subseteq_\rho r_2[Y]$ and $ r_2[Y] \subseteq_\rho  r_3[Z]$ are valid, $ r_1[X] \subseteq_\rho  r_3[Z]$ also needs to be valid. For the given example, if $\rho = 0.95$, we find a contradiction.
 
-\begin{definition}[Partial Inclusion Dependencies]\label{def:pinds}
-    A partial inclusion dependency (pIND) is written as $r_1[X] \subseteq_{\rho} r_2[Y]$ where $\rho \in (0, 1]$ and the reaming notation is analog to Definition \ref{def:inds}. The possible values for $\rho$ do not include $0$, since this would mean everything is a pIND of everything else, which is a trivial case. Further this notation refers to lists of tuples and takes the cardinality of duplicates into consideration. For the pIND $r_1[X] \subseteq_{\rho} r_2[Y]$ to be valid
-    $$
-        \frac{|r_1[X] \cap r_2[Y]|}
-            {|r_1[X]|} \geq \rho
-    $$
-    needs to be true.
-\end{definition}
+\subsubsection{\textbf{Projection:}}
+Finally, both INDs and pINDs adhere projection. Consider the lists of tuples $r_1[X]$, $r_1[Y]$, $r_2[Z]$, $r_2[W]$, with $X \cap Y = \emptyset$ and $Z \cap W = \emptyset$. Assume $r_1[XY] \subseteq_\rho r_2[ZW]$ is valid for some $\rho \in (0, 1]$. If projection holds, this implies that $r_1[X] \subseteq_\rho r_2[Z]$ and $r_1[Y] \subseteq_\rho r_2[W]$ must also be valid. If we now only consider the portion which satisfies $\tilde r_1[XY] \subseteq_1 \tilde r_2[ZW]$ (with at least $|r_1| \cdot \rho$ entries) we can use the known properties for INDs and conclude that for $\tilde r_1[X] \subseteq_1 \tilde r_2[Z]$ and $\tilde r_1[Y] \subseteq_1 \tilde r_2[W]$ have to be valid. This also directly implies that $r_1[X] \subseteq_\rho r_2[Z]$ and $r_1[Y] \subseteq_\rho r_2 [W]$ will be true if the remaining $|r_1| \cdot (1-\rho)$ entries are added again. This characteristic is crucial for reducing the search space, which is the most critical task in the discovery of (p)INDs \cite{liu2010discover}. \\
 
-This definition uses the $\cap$ operator, which is usually used in set theory and defined for sets. 
-The definitions adaptation of the operator is $r_1[X] \cap r_2[Y] = u \in r_1[X] \: | \: \exists \; v \in r_2[Y] : u = v$.
-In natural language the operator conducts the operation \textit{"remove all elements from the dependent attribute, that are not present at least once in the referenced attribute"}. Therefore the referenced attribute could also be a set in a sense that the duplication distribution only matters for the dependent attribute.\\
-
-As touched on in the definition of pINDs, the handling of duplicate values needs to be decieded. Two different versions where already proposed in \cite{bauckmann2006efficiently} and can be defined as \textit{duplicateAware} and \textit{duplicateUnaware}.
-For the \textit{duplicateAware} version, the maximum number of violations that can occur for $r_1[X] \subseteq_{\rho} r_2[Y]$ to be valid is equal to $\lfloor (1-\rho) \cdot |r_1[X]| \rfloor$. We examine if less than $\rho$ percent of entries would need to be changed. In a \textit{duplicateUnaware} setting we care about changed value, while not regarding their number of occurrences. We ask the question, do less than $\rho$ percent of the unique values need to be modified, such that the IND $r_1[X] \subseteq r_2[Y]$ would be valid. In this setting, the maximum number of violations is equal to $\lfloor(1-\rho) \cdot |\{r_1[X]\}| \rfloor$. Notice the set notation around the attribute, where we calculate the number of distinct values. \\
-
-\subsection{Properties of partial inclusion dependencies}
-Inclusion Dependencies follow Armstrong's Axioms \cite{armstrong2002armstrong}. We will now discuss which of the properties will also hold in a partial setting. Firstly, partial inclusion dependencies also respect reflexivity. For any $\rho \in (0, 1]$ the partial inclusion dependency $r_i[X_j] \subseteq_{\rho} r_i[X_j]$ is valid.
-\begin{align*}
-    \frac{|r_i[X_j] \cap r_i[X_j]|}
-        {|r_i[X_j]|} & \geq \rho \\
-    \frac{|r_i[X_j]|}
-        {|r_i[X_j]|} & \geq \rho \\
-        1 & \geq \rho
- \end{align*}
- Since $\rho$ is upper bounded by $1$ the last statement will always be true.
-
- Contrary to INDs, pINDs do not generally respect transitivity. We will proof this claim by contradiction. Assume $r_1[X] = [1, 2, ..., 100], r_2[Y] = [2, ..., 1000], r_3[Z] = [10, 11, ..., 1000],$. If transitivity would hold for any $\rho$, then we should find that for $\rho \in (0, 1]$ where $r_1[X] \subseteq_\rho r_2[Y]$ and $ r_2[Y] \subseteq_\rho  r_3[Z]$ are valid, $ r_1[X] \subseteq_\rho  r_3[Z]$ also needs to be valid. For the given example, if $\rho = 0.95$, we find a contradiction.
-
-Lastly, both INDs and pINDs respect projection. We will now outline a proof for this claim. Consider the attributes $r_1[X]$, $r_1[Y]$, $r_2[Z]$, $r_2[W]$ where $r_1[X]$ and $r_1[Y]$ are in the same relation and $r_2[Z]$ and $r_2[W]$ are in the same relation, with $X \not = Y$ and $Z \not = W$. Assume $r_1[X], r_1[Y] \subseteq_\rho r_2[Z], r_2[W]$ is valid for some $\rho \in (0, 1]$. If projection holds, this implies that $r_1[X] \subseteq_\rho r_2[Z]$ and $r_1[Y] \subseteq_\rho r_2[W]$ have to be valid as well. If we now only consider the portion (with reduced size $\rho\%$) which satisfies $r_1[X], r_1[Y] \subseteq_1 r_2[Z], r_2[W]$ we can use the known properties for INDs and conclude that for at least $\rho\%$ $r_1[X] \subseteq_1 r_2[Z]$ and $r_1[Y] \subseteq_1 r_2[W]$ has to be valid. This also directly implies that $r_1[X] \subseteq_\rho r_2[Z]$ and $r_1[Y] \subseteq_\rho r_2 [W]$ will be true if the remaining $(1-\rho)\%$ values are added again. This property is very important for search space pruning, which is the single most important task for (p)IND discovery \cite{liu2010discover}.
-
-The complexity of discovering partial inclusion dependencies is inherited form the base problem. Since the complexity is calculated under a worst case assumption, it does not change when switching into the partial setting.
+\noindent The complexity of pIND discovery is inherited form IND discovery. Given that the complexity is assessed under the worst-case scenario, it remains unchanged when transitioning to the partial context.
 

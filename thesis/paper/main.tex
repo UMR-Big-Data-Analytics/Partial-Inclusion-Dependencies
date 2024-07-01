@@ -22,6 +22,8 @@
 
 % added packages
 \usepackage[noend,linesnumbered]{algorithm2e}
+\usepackage{cleveref}
+
 \SetKwInput{KwInput}{Input}
 \SetKwInput{KwOutput}{Output}
 \SetKwIF{If}{ElseIf}{Else}{if}{}{else if}{else}{end if}
@@ -51,21 +53,13 @@
 }
 \email{papenbrock@informatik.uni-marburg.de}
 
-\author{Phd Mensch}
-\orcid{0000-0001-5109-3700}
-\affiliation{%
-  \institution{Inria Paris-Rocquencourt}
-  \city{Rocquencourt}
-  \country{France}
-}
-\email{vb@rocquencourt.com}
 
 %%
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-In a world where data grows exponentially and data sharing becomes more common, the need for efficient and flexible data profiling increases constantly.  Identifying inclusion dependencies (INDs) among attributes is crucial for tasks like data integration, query optimization, and integrity checking. One significant challenge lies in detecting these relationships, particularly with the increasing size of datasets, which escalates the complexity of IND discovery. \\
-Past research dealing with INDs mostly overlooked the potential of partial INDs (pINDs), meaning imperfect subsets. Such partial INDs can enable researchers and data engineers to understand databases, even if different sources do not match perfectly. After introducing pIND properties and discussing new strategies for (p)IND discovery, combining know strategies such as a sort-merge join and heavy parallelization, we will introduce \textit{SPIND}. An algorithm that is not only able to find all pINDs, it also outperforms the current state-of-the-art algorithm \textit{BINDER} in both unary and n-ary setting by multiple magnitudes.
+In a world where data grows exponentially and data sharing becomes more common, the need for efficient and flexible data profiling increases constantly.  Identifying inclusion dependencies (INDs) among attributes is crucial for tasks like data integration, query optimization, and integrity checking. A significant challenge lies in detecting these relationships, particularly with the increasing size of datasets, which escalates the complexity of IND discovery.
+Past research dealing with INDs mostly overlooked the potential of partial INDs (pINDs), meaning imperfect subsets. Such pINDs can enable researchers and data engineers to understand databases, even if different sources do not match perfectly. After introducing pIND properties and discussing new strategies for (p)IND discovery, combining known strategies such as a sort-merge join and heavy parallelization, we will introduce \textit{SPIND}. An algorithm that is not only able to find all pINDs, it also outperforms the current state-of-the-art algorithm \textit{BINDER} in both unary and nary settings by multiple magnitudes.
 \end{abstract}
 
 \maketitle
@@ -99,6 +93,8 @@ The source code, data, and/or other artifacts have been made available at \url{\
 %%% Start of paper content %%%
 \input{introduction/introduction}
 
+\input{foundations/related_work}
+
 \input{foundations/definitions}
 
 \input{foundations/dealing_with_null}
@@ -107,13 +103,11 @@ The source code, data, and/or other artifacts have been made available at \url{\
 
 \input{pINDs/spind}
 
+\input{pINDs/filter}
+
 \input{pINDs/candidate_generation}
 
-\input{pINDs/hyperparameters}
-
 \input{results/evaluation}
-
-\input{foundations/related_work}
 
 \input{results/future}
 
