@@ -37,7 +37,7 @@
 %    \boldNumberSetsfalse % Use this value if you want variables for number sets (like N or R) to appear in blackboard bold rather than bold.
 
     % The title of the thesis. The first argument is for the English name, the second is for the German name.
-    \myTitle{Partial Inclusion Dependency Discovery}{Findung parieller Inklusionsabhängigkeiten}
+    \myTitle{Partial Inclusion Dependency Discovery}{Findung partieller Inklusionsabhängigkeiten}
 
     % The author’s name.
     \myName{Jakob Leander Müller}
@@ -46,13 +46,13 @@
     \myProgram{Data Science}
 
     % The date when the thesis will be handed in.
-    \dateOfHandingIn{XX. Juli 2024}
+    \dateOfHandingIn{05. Juli 2024}
 
      % The name and affiliation of the author’s supervisor.
-    \nameOfMySupervisor{Prof.\,Dr. Thorsten Papenbrock}
+    \nameOfMySupervisor{Prof.\,Dr. Bernhard Seeger}
 
     % A list with the names of the additional examiners.
-    \additionalExaminers{A Postdoc\newline A PhD student}
+    \additionalExaminers{Prof.\,Dr. Thorsten Papenbrock}
 
     % A short summary of the thesis. These information will be used for the PDF meta data.
     \mySubject{A cool bachelor/master thesis.}
@@ -71,7 +71,12 @@
 \input{packages_and_commands/general_commands}      % Contains newly defined commands useful for mathematics.
 \input{packages_and_commands/user-defined_commands} % This is where user-defined commands should go.
 
+\usepackage[noend,linesnumbered]{algorithm2e}
+\usepackage{cleveref}
 
+\SetKwInput{KwInput}{Input}
+\SetKwInput{KwOutput}{Output}
+\SetKwIF{If}{ElseIf}{Else}{if}{}{else if}{else}{end if}
 % This is the thesis. The front matter as well as the references should not be changed. The main matter can be edited freely.
 \begin{document}
 
@@ -82,15 +87,16 @@
     \pagestyle{plain}
 
     \addchap{Abstract}
-    \input{preface/abstract}
+    In a world where data grows exponentially and data sharing becomes more common, the need for efficient and flexible data profiling increases constantly.  Identifying inclusion dependencies (INDs) among attributes is crucial for tasks like data integration, query optimization, and integrity checking. A significant challenge lies in detecting these relationships, particularly with the increasing size of datasets, which escalates the complexity of IND discovery.
+Past research dealing with INDs mostly overlooked the potential of partial INDs (pINDs), meaning imperfect subsets. Such pINDs can enable researchers and data engineers to understand databases, even if different sources do not match perfectly. After introducing pIND properties and discussing new strategies for (p)IND discovery, combining known strategies such as a sort-merge join and heavy parallelization, we will introduce \textit{SPIND}. An algorithm that is not only able to find all pINDs, it also outperforms the current state-of-the-art algorithm \textit{BINDER} in both unary and nary settings by multiple magnitudes.
 
     \selectlanguage{ngerman}
     \addchap{Zusammenfassung}
-    \input{preface/abstractGerman}
+    In der bisherigen Forschung, die sich mit Inklusionsabhängigkeiten(INDs) befasst hat, wurde das Potenzial partieller INDs (pINDs), also unreine Teilmengen, meist übersehen. Solche pINDs können es Forschern und Dateningenieuren ermöglichen, Datenbanken zu verstehen, selbst wenn die verschiedenen Quellen nicht perfekt übereinstimmen. Nach einer Einführung in die Eigenschaften von pINDs und der Erörterung neuer Strategien für die (p)IND-Ermittlung, die bekannte Strategien wie Sort-Merge-Join und starke Parallelisierung kombinieren, stellen wir \textit{SPIND} vor. Ein Algorithmus, der nicht nur in der Lage ist, alle pINDs zu finden, sondern der auch den aktuellen State-of-the-Art-Algorithmus \textit{BINDER} sowohl in unären als auch in nären Einstellungen um ein Vielfaches übertrifft.
     \selectlanguage{american}
 
     \addchap{Acknowledgments}
-    \input{preface/acknowledgments}
+    Vielen Dank an meinen Betreuer Thorsten Papenbrock. Ich schätze es sehr, dass mir im Rahmen meiner Masterarbeit viele Freiräume gegeben wurden und ich zu jeder Zeit die Richtung meiner Abschlussarbeit durch meine eigenen Ideen bestimmen konnte. Gleichzeitig möchte ich allen Menschen danken, die mich während meiner Zeit in Marburg und darüber hinaus begleitet haben und diese Zeit während meines Bachelors und Masters so bereichert haben. Meinen Eltern gilt besonderer Dank für ihre dauerhafte und bedingungslose Unterstützung meines Studiums. Diese Arbeit wurde als Paper verfasst, und wir planen, sie am 01.08.2024 bei der NAME-KONFERENZ einzureichen. Auch für diese besondere Herausforderung, die Ergebnisse in einer kompakten Form darzustellen, bin ich Thorsten sehr dankbar. Am Ende der Arbeit ist der Inhalt noch einmal im Paper-Format zu finden.
 
     \setuptoc{toc}{totoc}
     \tableofcontents
@@ -98,7 +104,6 @@
     \pagestyle{headings}
     \mainmatter
 
-    \chapter{Introduction}
     \input{introduction/introduction}
 
 
@@ -106,33 +111,25 @@
     %% Please add the content of your thesis here. %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    \part{Foundations}
+    \input{introduction/introduction}
 
-    \section{Definitions}
-    \input{1_Foundations/definitions}
-        
-    \section{Technologies}
-    \input{1_Foundations/technologies}
+    \input{foundations/related_work}
+
+    \input{foundations/definitions}
+
+    \input{foundations/dealing_with_null}
+
+    \input{pINDs/partial_IND_algorithms}
+
+    \input{pINDs/spind}
+
+    \input{pINDs/filter}
+
+    \input{pINDs/candidate_generation}
+
+    \input{results/evaluation}
+
     
-    \section{Null Entries}
-    \input{1_Foundations/dealing_with_null}
-
-    \chapter{Related Work}
-    \input{1_Foundations/related_work}
-
-    \part{Partial Inclusion Dependencies}
-    
-    \include{2_Partial Inclusion Dependencies/pSpider}
-    
-    \include{2_Partial Inclusion Dependencies/candidate_generation}
-    
-    \include{2_Partial Inclusion Dependencies/pBinder}
-
-    \include{2_Partial Inclusion Dependencies/spind}
-
-    \part{Results}
-    \section{Data Sets}
-    \include{3_Results/Datasets}
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% End of adding your content. %%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,8 +141,7 @@
         \def\toclevel@section{0}
     \makeatother
 
-    \chapter{Conclusions \& Outlook}
-    \input{conclusions/conclusions}
+    \input{results/future}
 
     % Following are the files and commands for the bibliography and the author’s publications.
     \pagestyle{plain}
