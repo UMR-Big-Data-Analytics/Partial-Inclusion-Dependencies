@@ -12,7 +12,7 @@ The original **SPIDER** and **BINDER** algorithms are available in the [Metanome
 
 All algorithms in this repository are implemented in Java and built using Maven. To build the project, ensure the following tools are installed:
 
-- Java JDK 1.18 or later
+- Java JDK 21 or later
 - Maven
 - Git
 
